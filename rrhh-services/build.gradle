@@ -1,0 +1,5 @@
+dependencies {
+	compile project(':rrhh-integration:rrhh-client')
+	compile project(':rrhh-model:rrhh-model-api')
+	compile project(':rrhh-model:rrhh-model-jpa')	
+}
