@@ -32,7 +32,7 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 	}
 
 	@Override
-	public AgenciaModel addAgencia(SucursalModel sucursal, String codigo, String abreviatura, String denominacion, String ubigeo) {
+	public AgenciaModel addAgencia(SucursalModel sucursal, String codigo, String abreviatura, String denominacion, String ubigeo, String direccion) {
 		AgenciaEntity agenciaEntity = new AgenciaEntity();
 
 		SucursalEntity sucursalEntity = SucursalAdapter.toSucursalEntity(sucursal, em);
@@ -41,6 +41,7 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 		agenciaEntity.setCodigo(codigo);
 		agenciaEntity.setAbreviatura(abreviatura);
 		agenciaEntity.setDenominacion(denominacion);
+		agenciaEntity.setDireccion(direccion);
 		agenciaEntity.setUbigeo(ubigeo);
 		agenciaEntity.setEstado(true);
 		em.persist(agenciaEntity);
@@ -48,8 +49,8 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 	}
 
 	@Override
-	public boolean removeAgencia(AgenciaModel AgenciaModel) {
-		AgenciaEntity AgenciaEntity = em.find(AgenciaEntity.class, AgenciaModel.getId());
+	public boolean removeAgencia(AgenciaModel agenciaModel) {
+		AgenciaEntity AgenciaEntity = em.find(AgenciaEntity.class, agenciaModel.getId());
 		if (em.contains(AgenciaEntity))
 			em.remove(AgenciaEntity);
 		else
@@ -59,8 +60,8 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 
 	@Override
 	public AgenciaModel getAgenciaById(Integer id) {
-		AgenciaEntity AgenciaEntity = this.em.find(AgenciaEntity.class, id);
-		return AgenciaEntity != null ? new AgenciaAdapter(em, AgenciaEntity) : null;
+		AgenciaEntity agenciaEntity = this.em.find(AgenciaEntity.class, id);
+		return agenciaEntity != null ? new AgenciaAdapter(em, agenciaEntity) : null;
 	}
 
 	@Override

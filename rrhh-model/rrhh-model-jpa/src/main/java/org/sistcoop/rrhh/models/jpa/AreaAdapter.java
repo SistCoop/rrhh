@@ -1,14 +1,11 @@
 package org.sistcoop.rrhh.models.jpa;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 
-import org.sistcoop.rrhh.models.AgenciaModel;
-import org.sistcoop.rrhh.models.SucursalModel;
+import org.sistcoop.rrhh.models.AreaModel;
 import org.sistcoop.rrhh.models.jpa.entities.AreaEntity;
 
-public class AreaAdapter implements SucursalModel {
+public class AreaAdapter implements AreaModel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -20,7 +17,7 @@ public class AreaAdapter implements SucursalModel {
 		this.areaEntity = areaEntity;
 	}
 
-	public AreaEntity getSucursalEntity() {
+	public AreaEntity getAreaEntity() {
 		return areaEntity;
 	}
 
@@ -31,62 +28,27 @@ public class AreaAdapter implements SucursalModel {
 
 	@Override
 	public Integer getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return areaEntity.getId();
 	}
 
 	@Override
 	public String getDenominacion() {
-		// TODO Auto-generated method stub
-		return null;
+		return areaEntity.getDenominacion();
 	}
 
 	@Override
 	public void setDenominacion(String denominacion) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public String getAbreviatura() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setAbreviatura(String abreviatura) {
-		// TODO Auto-generated method stub
-
+		areaEntity.setDenominacion(denominacion);
 	}
 
 	@Override
 	public boolean getEstado() {
-		// TODO Auto-generated method stub
-		return false;
+		return areaEntity.isEstado();
 	}
 
 	@Override
 	public void desactivar() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public List<AgenciaModel> getAgencias() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AgenciaModel> getAgencias(boolean estado) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<AgenciaModel> getAgencias(String filterText, int firstResult, int maxResults) {
-		// TODO Auto-generated method stub
-		return null;
+		areaEntity.setEstado(false);
 	}
 
 }

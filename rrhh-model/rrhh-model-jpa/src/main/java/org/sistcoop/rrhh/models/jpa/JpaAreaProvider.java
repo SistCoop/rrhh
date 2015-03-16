@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 
 import org.sistcoop.rrhh.models.AreaModel;
 import org.sistcoop.rrhh.models.AreaProvider;
+import org.sistcoop.rrhh.models.jpa.entities.AreaEntity;
 
 @Named
 @Stateless
@@ -29,20 +30,27 @@ public class JpaAreaProvider implements AreaProvider {
 
 	@Override
 	public AreaModel addArea(String denominacion) {
-		// TODO Auto-generated method stub
-		return null;
+		AreaEntity areaEntity = new AreaEntity();
+		areaEntity.setDenominacion(denominacion);
+		areaEntity.setEstado(true);
+		em.persist(areaEntity);
+		return new AreaAdapter(em, areaEntity);
 	}
 
 	@Override
 	public boolean removeArea(AreaModel areaModel) {
-		// TODO Auto-generated method stub
-		return false;
+		AreaEntity areaEntity = em.find(AreaEntity.class, areaModel.getId());
+		if (em.contains(areaEntity))
+			em.remove(areaEntity);
+		else
+			em.remove(em.getReference(AreaEntity.class, areaEntity.getId()));
+		return true;
 	}
 
 	@Override
 	public AreaModel getAreaById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		AreaEntity areaEntity = this.em.find(AreaEntity.class, id);
+		return areaEntity != null ? new AreaAdapter(em, areaEntity) : null;
 	}
 
 	@Override

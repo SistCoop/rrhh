@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -17,6 +18,7 @@ public class CargoEntity {
 
 	private Integer id;
 	private String denominacion;
+	private boolean estado;
 
 	@Id
 	@GeneratedValue(generator = "SgGenericGenerator")
@@ -41,4 +43,13 @@ public class CargoEntity {
 		this.denominacion = denominacion;
 	}
 
+	@NotNull
+	@Type(type = "org.hibernate.type.TrueFalseType")
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
 }

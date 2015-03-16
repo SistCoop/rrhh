@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 
 import org.sistcoop.rrhh.models.CargoModel;
 import org.sistcoop.rrhh.models.CargoProvider;
+import org.sistcoop.rrhh.models.jpa.entities.CargoEntity;
 
 @Named
 @Stateless
@@ -29,20 +30,27 @@ public class JpaCargoProvider implements CargoProvider {
 
 	@Override
 	public CargoModel addCargo(String denominacion) {
-		// TODO Auto-generated method stub
-		return null;
+		CargoEntity cargoEntity = new CargoEntity();
+		cargoEntity.setDenominacion(denominacion);
+		cargoEntity.setEstado(true);
+		em.persist(cargoEntity);
+		return new CargoAdapter(em, cargoEntity);
 	}
 
 	@Override
 	public boolean removeCargo(CargoModel cargoModel) {
-		// TODO Auto-generated method stub
-		return false;
+		CargoEntity cargoEntity = em.find(CargoEntity.class, cargoModel.getId());
+		if (em.contains(cargoEntity))
+			em.remove(cargoEntity);
+		else
+			em.remove(em.getReference(CargoEntity.class, cargoEntity.getId()));
+		return true;
 	}
 
 	@Override
 	public CargoModel getCargoById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		CargoEntity cargoEntity = this.em.find(CargoEntity.class, id);
+		return cargoEntity != null ? new CargoAdapter(em, cargoEntity) : null;
 	}
 
 	@Override

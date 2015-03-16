@@ -28,32 +28,27 @@ public class CargoAdapter implements CargoModel {
 
 	@Override
 	public Integer getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return cargoEntity.getId();
 	}
 
 	@Override
 	public String getDenominacion() {
-		// TODO Auto-generated method stub
-		return null;
+		return cargoEntity.getDenominacion();
 	}
 
 	@Override
 	public void setDenominacion(String denominacion) {
-		// TODO Auto-generated method stub
-
+		cargoEntity.setDenominacion(denominacion);
 	}
 
 	@Override
 	public boolean getEstado() {
-		// TODO Auto-generated method stub
-		return false;
+		return cargoEntity.isEstado();
 	}
 
 	@Override
 	public void desactivar() {
-		// TODO Auto-generated method stub
-
+		cargoEntity.setEstado(false);
 	}
 
 }
