@@ -9,11 +9,6 @@ import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 public class ModelToRepresentation {
 
-	/**
-	 * Devuelve un objeto SucursalRepresentation a partir de un model.
-	 * 
-	 * @param model
-	 */
 	public static SucursalRepresentation toRepresentation(SucursalModel model) {
 		if (model == null)
 			return null;
@@ -27,11 +22,6 @@ public class ModelToRepresentation {
 		return rep;
 	}
 
-	/**
-	 * Devuelve un objeto AgenciaRepresentation a partir de un model.
-	 * 
-	 * @param model
-	 */
 	public static AgenciaRepresentation toRepresentation(AgenciaModel model) {
 		if (model == null)
 			return null;
@@ -39,6 +29,7 @@ public class ModelToRepresentation {
 		rep.setId(model.getId());
 		rep.setAbreviatura(model.getAbreviatura());
 		rep.setDenominacion(model.getDenominacion());
+		rep.setDireccion(model.getDireccion());
 		rep.setCodigo(model.getCodigo());
 		rep.setEstado(model.getEstado());
 		rep.setUbigeo(model.getUbigeo());
@@ -49,11 +40,6 @@ public class ModelToRepresentation {
 		return rep;
 	}
 
-	/**
-	 * Devuelve un objeto TrabajadorRepresentation a partir de un model.
-	 * 
-	 * @param model
-	 */
 	public static TrabajadorRepresentation toRepresentation(TrabajadorModel model) {
 		if (model == null)
 			return null;
@@ -63,7 +49,15 @@ public class ModelToRepresentation {
 		rep.setNumeroDocumento(model.getNumeroDocumento());
 
 		AgenciaModel agenciaModel = model.getAgencia();
-		AgenciaRepresentation agenciaRepresentation = toRepresentation(agenciaModel);
+		AgenciaRepresentation agenciaRepresentation = new AgenciaRepresentation();
+		agenciaRepresentation.setId(agenciaModel.getId());
+		agenciaRepresentation.setCodigo(agenciaModel.getCodigo());
+		agenciaRepresentation.setAbreviatura(agenciaModel.getAbreviatura());
+		agenciaRepresentation.setDenominacion(agenciaModel.getDenominacion());
+		agenciaRepresentation.setDireccion(agenciaModel.getDireccion());
+		agenciaRepresentation.setUbigeo(agenciaModel.getUbigeo());
+		agenciaRepresentation.setEstado(agenciaModel.getEstado());
+
 		rep.setAgencia(agenciaRepresentation);
 
 		return rep;

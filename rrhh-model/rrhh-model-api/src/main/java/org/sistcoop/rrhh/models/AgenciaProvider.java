@@ -7,7 +7,7 @@ import org.sistcoop.rrhh.provider.Provider;
 @Local
 public interface AgenciaProvider extends Provider {
 
-	AgenciaModel addAgencia(SucursalModel sucursal, String codigo, String abreviatura, String denominacion, String ubigeo);
+	AgenciaModel addAgencia(SucursalModel sucursal, String codigo, String abreviatura, String denominacion, String ubigeo, String direccion);
 
 	boolean removeAgencia(AgenciaModel agenciaModel);
 

@@ -7,7 +7,10 @@ import org.sistcoop.rrhh.provider.Provider;
 @Local
 public interface TrabajadorProvider extends Provider {
 
-	TrabajadorModel addTrabajador(AgenciaModel agenciaModel, String tipoDocumento, String numeroDocumento);
+	TrabajadorModel addTrabajador(
+			AgenciaModel agenciaModel, 
+			String tipoDocumento, 
+			String numeroDocumento);
 
 	boolean removeTrabajador(TrabajadorModel trabajadorModel);
 
