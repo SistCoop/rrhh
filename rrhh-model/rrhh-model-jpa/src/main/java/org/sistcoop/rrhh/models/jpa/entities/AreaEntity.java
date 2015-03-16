@@ -12,8 +12,8 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name = "CARGO")
-public class CargoEntity {
+@Table(name = "AREA")
+public class AreaEntity {
 
 	private Integer id;
 	private String denominacion;
