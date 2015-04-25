@@ -26,6 +26,18 @@ import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 @Path("/sucursales")
 public interface SucursalResource {
 
+	@GET
+	public List<SucursalRepresentation> findAll(
+			@QueryParam("estado") Boolean estado,
+			
+			@QueryParam("filterText")
+			@Size(min = 1, max = 100) String filterText, 
+			
+			@QueryParam("firstResult") 
+			@Min(value = 0) Integer firstResult, 
+			
+			@QueryParam("maxResults") 
+			@Min(value = 1) Integer maxResults);
 	
 	@GET
 	@Path("/{id}")
