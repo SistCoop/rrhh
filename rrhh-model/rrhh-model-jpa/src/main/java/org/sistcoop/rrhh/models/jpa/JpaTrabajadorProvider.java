@@ -58,7 +58,7 @@ public class JpaTrabajadorProvider implements TrabajadorProvider {
 
 	@Override
 	public TrabajadorModel getTrabajadorByUsuario(String usuario) {
-		TypedQuery<TrabajadorEntity> query = em.createNamedQuery(TrabajadorEntity.findByUsuario, TrabajadorEntity.class);
+		/*TypedQuery<TrabajadorEntity> query = em.createNamedQuery(TrabajadorEntity.findByUsuario, TrabajadorEntity.class);
 		query.setParameter("usuario", usuario);
 		List<TrabajadorEntity> list = query.getResultList();
 		if (list.size() > 0) {
@@ -69,7 +69,8 @@ public class JpaTrabajadorProvider implements TrabajadorProvider {
 			return null;
 		} else {
 			return null;
-		}
+		}*/
+		return null;
 	}
 
 	@Override

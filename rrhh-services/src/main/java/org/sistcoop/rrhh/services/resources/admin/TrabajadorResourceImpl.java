@@ -23,45 +23,42 @@ import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@Inject
-	private SucursalProvider sucursalProvider;
-	
-	@Inject
-	private AgenciaProvider agenciaProvider;
+	private TrabajadorProvider trabajadorProvider;
 	
 	@Context
 	protected UriInfo uriInfo;
 
 	@Override
 	public TrabajadorRepresentation findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
+		return ModelToRepresentation.toRepresentation(model);
 	}
 
 	@Override
 	public TrabajadorRepresentation findByTipoNumeroDocumento(
 			String tipoDocumento, String numeroDocumento) {
-		// TODO Auto-generated method stub
-		return null;
+		TrabajadorModel model = trabajadorProvider.getTrabajadorByTipoNumeroDocumento(tipoDocumento, numeroDocumento);
+		return ModelToRepresentation.toRepresentation(model);
 	}
 
 	@Override
 	public void update(Integer id, TrabajadorRepresentation rep) {
-		// TODO Auto-generated method stub
+		TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
+		//model.setAgencia(agenciaModel);
 		
 	}
 
 	@Override
 	public void delete(Integer id) {
-		// TODO Auto-generated method stub
-		
+		TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
+		trabajadorProvider.removeTrabajador(model);
 	}
 
 	@Override
 	public void desactivar(Integer id) {
-		// TODO Auto-generated method stub
-		
+		TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
+		model.desactivar();
+		model.commit();
 	}
-
-	
 	
 }

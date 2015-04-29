@@ -1,5 +1,6 @@
 package org.sistcoop.rrhh.services.resources.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -10,10 +11,12 @@ import javax.ws.rs.core.UriInfo;
 import org.sistcoop.rrhh.admin.client.resource.AgenciaResource;
 import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.AgenciaProvider;
+import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
+import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 public class AgenciaResourceImpl implements AgenciaResource {
@@ -40,14 +43,6 @@ public class AgenciaResourceImpl implements AgenciaResource {
 	}
 
 	@Override
-	public List<TrabajadorRepresentation> getTrabajadores(Integer id,
-			Boolean estado, String filterText, Integer firstResult,
-			Integer maxResults) {
-		//TODO
-		return null;
-	}
-
-	@Override
 	public void updateAgencia(Integer id,
 			AgenciaRepresentation agenciaRepresentation) {
 		
@@ -62,10 +57,40 @@ public class AgenciaResourceImpl implements AgenciaResource {
 
 	@Override
 	public void desactivar(Integer id) {
-		// TODO Auto-generated method stub
-		
+		AgenciaModel model = agenciaProvider.getAgenciaById(id);
+		model.desactivar();
+		model.commit();
 	}
 
+	@Override
+	public List<TrabajadorRepresentation> getTrabajadores(Integer id,
+			Boolean estado, String filterText, Integer firstResult,
+			Integer maxResults) {
+
+		/*if(filterText == null)
+			filterText = "";
+		if(firstResult == null)
+			firstResult = -1;
+		if(maxResults == null)
+			maxResults = -1;
+		
+		List<TrabajadorRepresentation> results = new ArrayList<TrabajadorRepresentation>();
+		List<TrabajadorModel> trabajadorModels;
+		if (estado == null) {
+			
+		} else {
+			
+		}
+		
+		for (TrabajadorModel trabajadorModel : trabajadorModels) {
+			results.add(ModelToRepresentation.toRepresentation(trabajadorModel));
+		}
+		
+		return results;*/
+		return null;
+		
+	}
+	
 	@Override
 	public Response addTrabajador(Integer id, TrabajadorRepresentation rep) {
 		AgenciaModel model = agenciaProvider.getAgenciaById(id);

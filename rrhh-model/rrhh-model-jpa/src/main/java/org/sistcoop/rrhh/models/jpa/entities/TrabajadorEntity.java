@@ -30,8 +30,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Table(name = "TRABAJADOR", indexes = { @Index(columnList = "id") })
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@NamedQueries(value = {
-		@NamedQuery(name = TrabajadorEntity.findByUsuario, query = "SELECT t FROM TrabajadorEntity t WHERE t.usuario = :usuario AND t.estado = TRUE"),
+@NamedQueries(value = {		
 		@NamedQuery(name = TrabajadorEntity.findByTipoAndNumeroDocumento, query = "SELECT t FROM TrabajadorEntity t WHERE t.tipoDocumento = :tipoDocumento AND t.numeroDocumento = :numeroDocumento AND t.estado = TRUE"),
 		@NamedQuery(name = TrabajadorEntity.findByAgenciaAndFilterText, query = "SELECT t FROM TrabajadorEntity t WHERE t.agencia.id = :idAgencia AND ( t.numeroDocumento LIKE :filterText ) AND t.estado = TRUE") })
 public class TrabajadorEntity implements Serializable{
@@ -40,8 +39,7 @@ public class TrabajadorEntity implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public final static String base = "org.softgreen.sistcoop.organizacion.ejb.models.jpa.entities.TrabajadorEntity.";
-	public final static String findByUsuario = base + "findByUsuario";
+	public final static String base = "org.softgreen.sistcoop.organizacion.ejb.models.jpa.entities.TrabajadorEntity.";	
 	public final static String findByTipoAndNumeroDocumento = base + "findByTipoAndNumeroDocumento";
 	public final static String findByAgenciaAndFilterText = base + "findByAgenciaAndFilterText";
 	
