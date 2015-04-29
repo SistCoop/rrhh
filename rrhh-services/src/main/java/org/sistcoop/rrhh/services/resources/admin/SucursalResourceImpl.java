@@ -3,6 +3,7 @@ package org.sistcoop.rrhh.services.resources.admin;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -18,6 +19,7 @@ import org.sistcoop.rrhh.models.utils.RepresentationToModel;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 
+@Stateless
 public class SucursalResourceImpl implements SucursalResource {
 
 	@Inject
@@ -35,26 +37,26 @@ public class SucursalResourceImpl implements SucursalResource {
 	@Override
 	public List<SucursalRepresentation> findAll(Boolean estado,
 			String filterText, Integer firstResult, Integer maxResults) {
-
+		
 		if(filterText == null)
 			filterText = "";
 		if(firstResult == null)
 			firstResult = -1;
 		if(maxResults == null)
-			maxResults = -1;
+			maxResults = -1;		
 		
 		List<SucursalRepresentation> results = new ArrayList<SucursalRepresentation>();
 		List<SucursalModel> sucursalModels;
 		if (estado == null) {
-			sucursalModels = sucursalProvider.getSucursales(filterText, firstResult, maxResults);
-		} else {
+			sucursalModels = sucursalProvider.getSucursales(filterText, firstResult, maxResults);			
+		} else {			
 			sucursalModels = sucursalProvider.getSucursales(estado);
 		}
-		
-		for (SucursalModel sucursalModel : sucursalModels) {
-			results.add(ModelToRepresentation.toRepresentation(sucursalModel));
+				
+		for (SucursalModel sucursalModel : sucursalModels) {			
+			results.add(ModelToRepresentation.toRepresentation(sucursalModel));			
 		}
-		
+				
 		return results;
 	}
 

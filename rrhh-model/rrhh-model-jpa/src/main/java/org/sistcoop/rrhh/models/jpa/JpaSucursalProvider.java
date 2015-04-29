@@ -86,7 +86,7 @@ public class JpaSucursalProvider implements SucursalProvider {
 	}
 
 	@Override
-	public List<SucursalModel> getSucursales(String filterText, int firstResult, int maxResults) {
+	public List<SucursalModel> getSucursales(String filterText, int firstResult, int maxResults) {		
 		TypedQuery<SucursalEntity> query = em.createNamedQuery(SucursalEntity.findByFilterText, SucursalEntity.class);
 		if (filterText == null)
 			filterText = "";
@@ -95,13 +95,13 @@ public class JpaSucursalProvider implements SucursalProvider {
 		}
 		if (maxResults != -1) {
 			query.setMaxResults(maxResults);
-		}
+		}		
 		query.setParameter("filterText", "%" + filterText.toUpperCase() + "%");
-		List<SucursalEntity> list = query.getResultList();
-		List<SucursalModel> results = new ArrayList<SucursalModel>();
-		for (SucursalEntity entity : list) {
-			results.add(new SucursalAdapter(em, entity));
-		}
+		List<SucursalEntity> list = query.getResultList();		
+		List<SucursalModel> results = new ArrayList<SucursalModel>();		
+		for (SucursalEntity entity : list) {			
+			results.add(new SucursalAdapter(em, entity));			
+		}		
 		return results;
 	}
 
