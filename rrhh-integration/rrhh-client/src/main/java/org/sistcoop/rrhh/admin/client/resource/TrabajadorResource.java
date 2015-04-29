@@ -20,7 +20,7 @@ import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/agencias")
+@Path("/trabajadores")
 public interface TrabajadorResource {
 
 	@GET
