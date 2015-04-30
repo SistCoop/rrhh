@@ -1,8 +1,8 @@
 package org.sistcoop.rrhh.services.resources.admin;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -11,14 +11,13 @@ import javax.ws.rs.core.UriInfo;
 import org.sistcoop.rrhh.admin.client.resource.AgenciaResource;
 import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.AgenciaProvider;
-import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
-import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
+@Stateless
 public class AgenciaResourceImpl implements AgenciaResource {
 
 	@Inject
@@ -32,7 +31,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 	
 	@Override
 	public AgenciaRepresentation getAgenciaById(Integer id) {
-		AgenciaModel model = agenciaProvider.getAgenciaById(id);
+		AgenciaModel model = agenciaProvider.getAgenciaById(id);		
 		return ModelToRepresentation.toRepresentation(model);
 	}
 

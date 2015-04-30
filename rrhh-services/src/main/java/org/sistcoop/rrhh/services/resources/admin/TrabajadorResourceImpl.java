@@ -1,25 +1,17 @@
 package org.sistcoop.rrhh.services.resources.admin;
 
-import java.util.List;
-
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.sistcoop.rrhh.admin.client.resource.AgenciaResource;
-import org.sistcoop.rrhh.admin.client.resource.SucursalResource;
 import org.sistcoop.rrhh.admin.client.resource.TrabajadorResource;
-import org.sistcoop.rrhh.models.AgenciaModel;
-import org.sistcoop.rrhh.models.AgenciaProvider;
-import org.sistcoop.rrhh.models.SucursalProvider;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
-import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
-import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
+@Stateless
 public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@Inject
@@ -43,9 +35,8 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@Override
 	public void update(Integer id, TrabajadorRepresentation rep) {
-		TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
-		//model.setAgencia(agenciaModel);
-		
+		//TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
+		//model.setAgencia(agenciaModel);				
 	}
 
 	@Override
