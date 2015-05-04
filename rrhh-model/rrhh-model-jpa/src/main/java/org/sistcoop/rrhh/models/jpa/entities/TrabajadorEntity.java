@@ -108,7 +108,6 @@ public class TrabajadorEntity implements Serializable{
 		this.agencia = agencia;
 	}
 	
-	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(foreignKey = @ForeignKey)
 	public AreaEntity getArea() {
@@ -119,7 +118,6 @@ public class TrabajadorEntity implements Serializable{
 		this.area = area;
 	}
 	
-	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(foreignKey = @ForeignKey)
 	public CargoEntity getCargo() {

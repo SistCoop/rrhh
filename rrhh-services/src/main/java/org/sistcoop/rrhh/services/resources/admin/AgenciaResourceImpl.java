@@ -1,5 +1,6 @@
 package org.sistcoop.rrhh.services.resources.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -66,27 +67,27 @@ public class AgenciaResourceImpl implements AgenciaResource {
 			Boolean estado, String filterText, Integer firstResult,
 			Integer maxResults) {
 
-		/*if(filterText == null)
+		if (filterText == null)
 			filterText = "";
-		if(firstResult == null)
+		if (firstResult == null)
 			firstResult = -1;
-		if(maxResults == null)
+		if (maxResults == null)
 			maxResults = -1;
-		
+
+		AgenciaModel model = agenciaProvider.getAgenciaById(id);
 		List<TrabajadorRepresentation> results = new ArrayList<TrabajadorRepresentation>();
 		List<TrabajadorModel> trabajadorModels;
 		if (estado == null) {
-			
+			trabajadorModels = model.getTrabajadores(filterText, firstResult, maxResults);
 		} else {
-			
+			trabajadorModels = model.getTrabajadores(estado);
 		}
-		
+
 		for (TrabajadorModel trabajadorModel : trabajadorModels) {
 			results.add(ModelToRepresentation.toRepresentation(trabajadorModel));
 		}
-		
-		return results;*/
-		return null;
+
+		return results;
 		
 	}
 	

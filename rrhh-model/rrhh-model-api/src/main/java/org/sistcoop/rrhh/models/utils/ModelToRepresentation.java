@@ -47,7 +47,8 @@ public class ModelToRepresentation {
 		rep.setId(model.getId());
 		rep.setTipoDocumento(model.getTipoDocumento());
 		rep.setNumeroDocumento(model.getNumeroDocumento());
-
+		rep.setEstado(model.getEstado());
+		
 		AgenciaModel agenciaModel = model.getAgencia();
 		AgenciaRepresentation agenciaRepresentation = new AgenciaRepresentation();
 		agenciaRepresentation.setId(agenciaModel.getId());
