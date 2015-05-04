@@ -3,9 +3,11 @@ package org.sistcoop.rrhh.models.utils;
 import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
+import org.sistcoop.rrhh.representations.idm.TrabajadorUsuarioRepresentation;
 
 public class ModelToRepresentation {
 
@@ -62,6 +64,27 @@ public class ModelToRepresentation {
 		rep.setAgencia(agenciaRepresentation);
 
 		return rep;
+	}
+
+	public static TrabajadorUsuarioRepresentation toRepresentation(
+			TrabajadorUsuarioModel model) {
+
+		if (model == null)
+			return null;
+		
+		TrabajadorUsuarioRepresentation rep = new TrabajadorUsuarioRepresentation();
+		rep.setId(model.getId());
+		rep.setUsuario(model.getUsuario());
+	
+		TrabajadorRepresentation trabajadorRepresentation = new TrabajadorRepresentation();
+		TrabajadorModel trabajadorModel = model.getTrabajador();
+		trabajadorRepresentation.setId(trabajadorModel.getId());
+		trabajadorRepresentation.setTipoDocumento(trabajadorModel.getTipoDocumento());
+		trabajadorRepresentation.setNumeroDocumento(trabajadorModel.getNumeroDocumento());
+		trabajadorRepresentation.setEstado(trabajadorModel.getEstado());
+		
+		return rep;
+		
 	}
 
 }

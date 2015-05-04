@@ -22,8 +22,7 @@ public class TrabajadorRepresentation implements Serializable {
 
 	private Integer id;
 	private String tipoDocumento;
-	private String numeroDocumento;
-	private String usuario;
+	private String numeroDocumento;	
 	private Boolean estado;
 
 	private AgenciaRepresentation agencia;
@@ -58,16 +57,6 @@ public class TrabajadorRepresentation implements Serializable {
 
 	public void setNumeroDocumento(String numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
-	}
-
-	@XmlAttribute
-	@Size(min = 1, max = 40)
-	public String getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
 	}
 
 	@XmlAttribute

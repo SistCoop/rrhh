@@ -18,10 +18,6 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
@@ -32,8 +28,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "AGENCIA", indexes = { @Index(columnList = "id") })
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.PROPERTY)
 @NamedQueries(value = {
 		@NamedQuery(name = AgenciaEntity.findByCodigo, query = "SELECT a FROM AgenciaEntity a WHERE a.codigo = :codigo"),
 		@NamedQuery(name = AgenciaEntity.findByEstado, query = "SELECT a FROM AgenciaEntity a WHERE a.estado = :estado"),
@@ -163,7 +157,6 @@ public class AgenciaEntity implements Serializable {
 		this.sucursal = sucursal;
 	}
 
-	@XmlTransient
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "agencia")
 	public Set<TrabajadorEntity> getTrabajadores() {
 		return trabajadores;
@@ -172,8 +165,7 @@ public class AgenciaEntity implements Serializable {
 	public void setTrabajadores(Set<TrabajadorEntity> trabajadores) {
 		this.trabajadores = trabajadores;
 	}
-
-	@XmlTransient
+	
 	@Version
 	public Timestamp getOptlk() {
 		return optlk;
