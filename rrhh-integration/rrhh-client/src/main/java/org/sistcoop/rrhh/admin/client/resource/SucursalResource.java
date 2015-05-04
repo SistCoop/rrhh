@@ -31,7 +31,7 @@ public interface SucursalResource {
 			@QueryParam("estado") Boolean estado,
 			
 			@QueryParam("filterText")
-			@Size(min = 1, max = 100) String filterText, 
+			@Size(min = 0, max = 100) String filterText, 
 			
 			@QueryParam("firstResult") 
 			@Min(value = 0) Integer firstResult, 
@@ -46,6 +46,13 @@ public interface SucursalResource {
 			@NotNull 
 			@Min(value = 1) Integer id);
 
+	@GET
+	@Path("/abreviatura/{abreviatura}")
+	public SucursalRepresentation findByAbreviatura(
+			@PathParam("abreviatura") 
+			@NotNull 
+			@Size(min = 1, max = 60) String abreviatura);	
+	
 	@GET
 	@Path("/denominacion/{denominacion}")
 	public SucursalRepresentation findByDenominacion(

@@ -68,6 +68,13 @@ public class SucursalResourceImpl implements SucursalResource {
 	}
 
 	@Override
+	public SucursalRepresentation findByAbreviatura(String abreviatura) {
+		SucursalModel model = sucursalProvider.getSucursalByAbreviatura(abreviatura);
+		SucursalRepresentation rep = ModelToRepresentation.toRepresentation(model);
+		return rep;
+	}
+	
+	@Override
 	public SucursalRepresentation findByDenominacion(String denominacion) {
 		SucursalModel model = sucursalProvider.getSucursalByDenominacion(denominacion);
 		SucursalRepresentation rep = ModelToRepresentation.toRepresentation(model);

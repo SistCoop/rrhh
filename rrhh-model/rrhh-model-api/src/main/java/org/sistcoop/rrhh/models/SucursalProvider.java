@@ -15,6 +15,8 @@ public interface SucursalProvider extends Provider {
 
 	SucursalModel getSucursalById(Integer id);
 
+	SucursalModel getSucursalByAbreviatura(String abreviatura);
+	
 	SucursalModel getSucursalByDenominacion(String denominacion);
 
 	List<SucursalModel> getSucursales();

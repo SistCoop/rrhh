@@ -28,6 +28,13 @@ public class SucursalAdapter implements SucursalModel {
 		return sucursalEntity;
 	}
 
+	public static SucursalEntity toSucursalEntity(SucursalModel model, EntityManager em) {
+		if (model instanceof SucursalAdapter) {
+			return ((SucursalAdapter) model).getSucursalEntity();
+		}
+		return em.getReference(SucursalEntity.class, model.getId());
+	}
+	
 	@Override
 	public void commit() {
 		em.merge(sucursalEntity);
@@ -106,27 +113,29 @@ public class SucursalAdapter implements SucursalModel {
 		return results;
 	}
 
-	public static SucursalEntity toSucursalEntity(SucursalModel model, EntityManager em) {
-		if (model instanceof SucursalAdapter) {
-			return ((SucursalAdapter) model).getSucursalEntity();
-		}
-		return em.getReference(SucursalEntity.class, model.getId());
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || !(o instanceof SucursalModel))
-			return false;
-
-		SucursalModel that = (SucursalModel) o;
-		return that.getId().equals(getId());
-	}
-
 	@Override
 	public int hashCode() {
-		return getId().hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((getAbreviatura() == null) ? 0 : getAbreviatura().hashCode());
+		return result;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SucursalModel other = (SucursalModel) obj;
+		if (getAbreviatura() == null) {
+			if (other.getAbreviatura() != null)
+				return false;
+		} else if (!getAbreviatura().equals(other.getAbreviatura()))
+			return false;
+		return true;
+	}
 }
