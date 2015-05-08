@@ -102,7 +102,7 @@ public interface SucursalResource {
 			@QueryParam("estado") Boolean estado, 
 			
 			@QueryParam("filterText")
-			@Size(min = 1, max = 100) String filterText, 
+			@Size(min = 0, max = 100) String filterText, 
 			
 			@QueryParam("firstResult") 
 			@Min(value = 0) Integer firstResult, 

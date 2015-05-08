@@ -72,7 +72,10 @@ public interface AgenciaResource {
 
 	@POST
 	@Path("/{id}/desactivar")
-	public void desactivar(@PathParam("id") @NotNull @Min(value = 1) Integer id);	
+	public void desactivar(
+			@PathParam("id") 
+			@NotNull 
+			@Min(value = 1) Integer id);	
 	
 	@POST
 	@Path("/{id}/trabajadores")
