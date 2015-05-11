@@ -57,23 +57,6 @@ public class JpaTrabajadorProvider implements TrabajadorProvider {
 	}
 
 	@Override
-	public TrabajadorModel getTrabajadorByUsuario(String usuario) {
-		/*TypedQuery<TrabajadorEntity> query = em.createNamedQuery(TrabajadorEntity.findByUsuario, TrabajadorEntity.class);
-		query.setParameter("usuario", usuario);
-		List<TrabajadorEntity> list = query.getResultList();
-		if (list.size() > 0) {
-			for (TrabajadorEntity trabajadorEntity : list) {
-				if (trabajadorEntity.isEstado())
-					return new TrabajadorAdapter(em, trabajadorEntity);
-			}
-			return null;
-		} else {
-			return null;
-		}*/
-		return null;
-	}
-
-	@Override
 	public TrabajadorModel getTrabajadorById(Integer id) {
 		TrabajadorEntity trabajadorEntity = this.em.find(TrabajadorEntity.class, id);
 		return trabajadorEntity != null ? new TrabajadorAdapter(em, trabajadorEntity) : null;

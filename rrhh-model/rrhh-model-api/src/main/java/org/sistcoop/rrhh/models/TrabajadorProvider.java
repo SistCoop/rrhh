@@ -12,9 +12,7 @@ public interface TrabajadorProvider extends Provider {
 			String tipoDocumento, 
 			String numeroDocumento);
 
-	boolean removeTrabajador(TrabajadorModel trabajadorModel);
-
-	TrabajadorModel getTrabajadorByUsuario(String usuario);
+	boolean removeTrabajador(TrabajadorModel trabajadorModel);	
 
 	TrabajadorModel getTrabajadorById(Integer id);
 
