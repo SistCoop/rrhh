@@ -27,5 +27,7 @@ public interface TrabajadorModel extends Model {
 	CargoModel getCargo();
 
 	void setCargo(CargoModel cargoModel);
+	
+	TrabajadorUsuarioModel getTrabajadorUsuarioModel();
 
 }

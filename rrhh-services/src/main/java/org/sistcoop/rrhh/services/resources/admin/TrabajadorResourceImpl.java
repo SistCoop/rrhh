@@ -3,6 +3,7 @@ package org.sistcoop.rrhh.services.resources.admin;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.sistcoop.rrhh.admin.client.resource.TrabajadorResource;
@@ -10,15 +11,21 @@ import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.AgenciaProvider;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
+import org.sistcoop.rrhh.representations.idm.TrabajadorUsuarioRepresentation;
 
 @Stateless
 public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@Inject
 	private TrabajadorProvider trabajadorProvider;
+	
+	@Inject
+	private TrabajadorUsuarioProvider trabajadorUsuarioProvider;
 	
 	@Inject
 	private AgenciaProvider agenciaProvider;
@@ -69,6 +76,37 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 		TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
 		model.desactivar();
 		model.commit();
+	}
+
+	@Override
+	public TrabajadorUsuarioRepresentation getTrabajadorUsuario(Integer id) {
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
+		TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorModel.getTrabajadorUsuarioModel();
+		return ModelToRepresentation.toRepresentation(trabajadorUsuarioModel);
+	}
+
+	@Override
+	public Response setTrabajadorUsuario(Integer id,
+			TrabajadorUsuarioRepresentation trabajadorUsuarioRepresentation) {
+
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
+		TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorModel.getTrabajadorUsuarioModel();
+		
+		String usuario = trabajadorUsuarioRepresentation.getUsuario();	
+		//Usuario ya existente
+		if(trabajadorUsuarioModel != null) 
+		{
+			trabajadorUsuarioModel.setUsuario(usuario);
+			trabajadorUsuarioModel.commit();
+			return Response.created(uriInfo.getAbsolutePathBuilder().path(trabajadorUsuarioModel.getId().toString()).build()).header("Access-Control-Expose-Headers", "Location").entity(trabajadorUsuarioModel.getId()).build();
+		} 
+		//usuario asignado por primera vez
+		else 
+		{
+			TrabajadorUsuarioModel trabajadorUsuarioNewModel = trabajadorUsuarioProvider.addTrabajadorUsuario(trabajadorModel, usuario);
+			return Response.created(uriInfo.getAbsolutePathBuilder().path(trabajadorUsuarioNewModel.getId().toString()).build()).header("Access-Control-Expose-Headers", "Location").entity(trabajadorUsuarioNewModel.getId()).build();
+		}								
+		
 	}
 	
 }

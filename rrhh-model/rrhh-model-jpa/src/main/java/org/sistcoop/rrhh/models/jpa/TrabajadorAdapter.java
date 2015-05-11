@@ -1,13 +1,17 @@
 package org.sistcoop.rrhh.models.jpa;
 
+import java.util.Set;
+
 import javax.persistence.EntityManager;
 
 import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.AreaModel;
 import org.sistcoop.rrhh.models.CargoModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
 import org.sistcoop.rrhh.models.jpa.entities.AgenciaEntity;
 import org.sistcoop.rrhh.models.jpa.entities.TrabajadorEntity;
+import org.sistcoop.rrhh.models.jpa.entities.TrabajadorUsuarioEntity;
 
 public class TrabajadorAdapter implements TrabajadorModel {
 
@@ -108,6 +112,23 @@ public class TrabajadorAdapter implements TrabajadorModel {
 	}
 
 	@Override
+	public TrabajadorUsuarioModel getTrabajadorUsuarioModel() {
+		Set<TrabajadorUsuarioEntity> trabajadorUsuarioEntities = trabajadorEntity.getTrabajadorUsuarios();
+		TrabajadorUsuarioEntity trabajadorUsuarioEntity = null;
+		for (TrabajadorUsuarioEntity entity : trabajadorUsuarioEntities) {
+			trabajadorUsuarioEntity = entity;
+			break;
+		}
+		
+		if(trabajadorUsuarioEntity != null) {
+			return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);	
+		}			
+		else {
+			return null;	
+		}			
+	}
+	
+	@Override
 	public boolean equals(Object o) {
 		if (this == o)
 			return true;
@@ -122,4 +143,5 @@ public class TrabajadorAdapter implements TrabajadorModel {
 	public int hashCode() {
 		return getId().hashCode();
 	}
+
 }

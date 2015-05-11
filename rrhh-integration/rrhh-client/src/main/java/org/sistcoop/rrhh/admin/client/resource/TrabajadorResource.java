@@ -15,8 +15,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
+import org.sistcoop.rrhh.representations.idm.TrabajadorUsuarioRepresentation;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -66,5 +68,28 @@ public interface TrabajadorResource {
 			@PathParam("id") 
 			@NotNull 
 			@Min(value = 1) Integer id);	
+	
+	
+	/**
+	 * Trabajador usuarios
+	 * */
+	
+	@GET
+	@Path("/{id}/trabajadorUsuarios")
+	public TrabajadorUsuarioRepresentation getTrabajadorUsuario(
+			@PathParam("id") 
+			@NotNull
+			@Min(value = 1) Integer id);
+	
+
+	@POST
+	@Path("/{id}/trabajadorUsuarios")
+	public Response setTrabajadorUsuario(
+			@PathParam("id") 
+			@NotNull
+			@Min(value = 1) Integer id, 
+			
+			@NotNull
+			@Valid TrabajadorUsuarioRepresentation trabajadorUsuarioRepresentation);
 	
 }

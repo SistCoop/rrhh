@@ -31,5 +31,11 @@ public class TrabajadorUsuarioResourceImpl implements TrabajadorUsuarioResource 
 		TrabajadorUsuarioModel model = trabajadorUsuarioProvider.getTrabajadorUsuarioByUsuario(usuario);
 		return ModelToRepresentation.toRepresentation(model);
 	}
+
+	@Override
+	public void delete(Integer id) {
+		TrabajadorUsuarioModel model = trabajadorUsuarioProvider.getTrabajadorUsuarioById(id);
+		trabajadorUsuarioProvider.removeTrabajadorUsuario(model);
+	}
 	
 }

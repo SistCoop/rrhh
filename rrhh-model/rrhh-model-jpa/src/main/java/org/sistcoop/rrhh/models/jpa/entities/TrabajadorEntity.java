@@ -2,6 +2,8 @@ package org.sistcoop.rrhh.models.jpa.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -45,6 +48,8 @@ public class TrabajadorEntity implements Serializable{
 	private AreaEntity area;
 	private CargoEntity cargo;
 
+	private Set<TrabajadorUsuarioEntity> trabajadorUsuarios = new HashSet<TrabajadorUsuarioEntity>();
+	
 	private Timestamp optlk;	
 
 	@Id
@@ -120,6 +125,16 @@ public class TrabajadorEntity implements Serializable{
 
 	public void setCargo(CargoEntity cargo) {
 		this.cargo = cargo;
+	}
+	
+	@OneToMany(fetch= FetchType.LAZY, mappedBy = "trabajador")	
+	public Set<TrabajadorUsuarioEntity> getTrabajadorUsuarios() {
+		return trabajadorUsuarios;
+	}
+
+	public void setTrabajadorUsuarios(
+			Set<TrabajadorUsuarioEntity> trabajadorUsuarios) {
+		this.trabajadorUsuarios = trabajadorUsuarios;
 	}
 		
 	@Version
