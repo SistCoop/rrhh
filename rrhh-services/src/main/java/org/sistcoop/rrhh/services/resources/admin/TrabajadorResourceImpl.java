@@ -6,9 +6,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
 import org.sistcoop.rrhh.admin.client.resource.TrabajadorResource;
+import org.sistcoop.rrhh.models.AgenciaModel;
+import org.sistcoop.rrhh.models.AgenciaProvider;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
+import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Stateless
@@ -16,6 +19,9 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@Inject
 	private TrabajadorProvider trabajadorProvider;
+	
+	@Inject
+	private AgenciaProvider agenciaProvider;
 	
 	@Context
 	protected UriInfo uriInfo;
@@ -35,8 +41,21 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@Override
 	public void update(Integer id, TrabajadorRepresentation rep) {
-		//TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
-		//model.setAgencia(agenciaModel);				
+		TrabajadorModel model = trabajadorProvider.getTrabajadorById(id);
+		
+		AgenciaModel agenciaModel = null;
+				
+		AgenciaRepresentation agenciaRepresentation = rep.getAgencia();
+		Integer idAgencia = agenciaRepresentation.getId();
+		String codigoAgencia = agenciaRepresentation.getCodigo();
+		if(idAgencia != null) {
+			agenciaModel = agenciaProvider.getAgenciaById(idAgencia); 
+		} else if (codigoAgencia != null) {
+			agenciaModel = agenciaProvider.getAgenciaByCodigo(codigoAgencia);
+		}
+		
+		model.setAgencia(agenciaModel);
+		model.commit();				
 	}
 
 	@Override
