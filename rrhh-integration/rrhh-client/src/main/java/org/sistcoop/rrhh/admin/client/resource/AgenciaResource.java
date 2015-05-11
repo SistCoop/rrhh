@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
+import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -87,4 +88,14 @@ public interface AgenciaResource {
 			@NotNull
 			@Valid TrabajadorRepresentation rep);
 	
+	
+	/**
+	 * Sucursal*/
+	
+	@GET
+	@Path("/{id}/sucursal")
+	public SucursalRepresentation getSucursal(
+			@PathParam("id") 
+			@NotNull 
+			@Min(value = 1) Integer id);
 }

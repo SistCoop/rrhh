@@ -17,6 +17,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorUsuarioRepresentation;
 
@@ -69,6 +70,15 @@ public interface TrabajadorResource {
 			@NotNull 
 			@Min(value = 1) Integer id);	
 	
+	/**
+	 * Agencia*/
+	
+	@GET
+	@Path("/{id}/agencia")
+	public AgenciaRepresentation getAgencia(
+			@PathParam("id") 
+			@NotNull 
+			@Min(value = 1) Integer id);
 	
 	/**
 	 * Trabajador usuarios

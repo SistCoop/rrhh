@@ -82,6 +82,7 @@ public class ModelToRepresentation {
 		trabajadorRepresentation.setTipoDocumento(trabajadorModel.getTipoDocumento());
 		trabajadorRepresentation.setNumeroDocumento(trabajadorModel.getNumeroDocumento());
 		trabajadorRepresentation.setEstado(trabajadorModel.getEstado());
+		rep.setTrabajador(trabajadorRepresentation);
 		
 		return rep;
 		

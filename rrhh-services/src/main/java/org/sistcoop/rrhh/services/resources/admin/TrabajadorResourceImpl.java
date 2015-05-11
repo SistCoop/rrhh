@@ -108,5 +108,12 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 		}								
 		
 	}
+
+	@Override
+	public AgenciaRepresentation getAgencia(Integer id) {
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
+		AgenciaModel agenciaModel = trabajadorModel.getAgencia();
+		return ModelToRepresentation.toRepresentation(agenciaModel);
+	}
 	
 }

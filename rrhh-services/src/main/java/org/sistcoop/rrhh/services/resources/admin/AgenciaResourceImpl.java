@@ -12,10 +12,12 @@ import javax.ws.rs.core.UriInfo;
 import org.sistcoop.rrhh.admin.client.resource.AgenciaResource;
 import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.AgenciaProvider;
+import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
+import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Stateless
@@ -96,6 +98,13 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		AgenciaModel model = agenciaProvider.getAgenciaById(id);
 		TrabajadorModel trabajadorModel = trabajadorProvider.addTrabajador(model, rep.getTipoDocumento(), rep.getNumeroDocumento());		
 		return Response.created(uriInfo.getAbsolutePathBuilder().path(trabajadorModel.getId().toString()).build()).header("Access-Control-Expose-Headers", "Location").entity(trabajadorModel.getId()).build();
+	}
+
+	@Override
+	public SucursalRepresentation getSucursal(Integer id) {
+		AgenciaModel model = agenciaProvider.getAgenciaById(id);
+		SucursalModel sucursalModel = model.getSucursal();
+		return ModelToRepresentation.toRepresentation(sucursalModel);
 	}
 
 }
