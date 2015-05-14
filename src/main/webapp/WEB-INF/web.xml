@@ -9,13 +9,22 @@
 
 	<!-- java ee roles -->
 	<security-role>
-		<role-name>ADMIN</role-name>
+		<role-name>ver-sucursales</role-name>
 	</security-role>
 	<security-role>
-		<role-name>AUTHENTICATED</role-name>
+		<role-name>administrar-sucursales</role-name>
 	</security-role>
 	<security-role>
-		<role-name>PUBLIC</role-name>
+		<role-name>ver-agencias</role-name>
+	</security-role>
+	<security-role>
+		<role-name>administrar-agencias</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ver-trabajadores</role-name>
+	</security-role>
+	<security-role>
+		<role-name>administrar-ver-trabajadores</role-name>
 	</security-role>
 
 	<!-- users permisions -->
@@ -24,7 +33,7 @@
 			<url-pattern>/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
-			<role-name>ADMIN</role-name>
+			<role-name>ver-sucursales</role-name>
 		</auth-constraint>
 	</security-constraint>
 	<security-constraint>
@@ -32,7 +41,7 @@
 			<url-pattern>/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
-			<role-name>AUTHENTICATED</role-name>
+			<role-name>administrar-sucursales</role-name>
 		</auth-constraint>
 	</security-constraint>
 	<security-constraint>
@@ -40,14 +49,39 @@
 			<url-pattern>/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
-			<role-name>PUBLIC</role-name>
+			<role-name>ver-agencias</role-name>
 		</auth-constraint>
 	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>administrar-agencias</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ver-trabajadores</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>administrar-trabajadores</role-name>
+		</auth-constraint>
+	</security-constraint>
+
 
 	<!-- Login method -->
 	<login-config>
 		<auth-method>KEYCLOAK</auth-method>
-		<realm-name>sistcoop</realm-name>
+		<realm-name>sistcoop-master</realm-name>
 	</login-config>
 
 </web-app>
