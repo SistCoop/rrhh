@@ -18,16 +18,30 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
 @Path("/sucursales")
 public interface SucursalResource {
+	
+	@GET
+	@Path("/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public SucursalRepresentation findById(
+			@PathParam("id") 
+			@NotNull 
+			@Min(value = 1) Integer id);
 
 	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<SucursalRepresentation> findAll(
+			@QueryParam("abreviatura") 			
+			@Size(min = 1, max = 60) String abreviatura,
+			
+			@QueryParam("denominacion") 			
+			@Size(min = 1, max = 60) String denominacion,
+			
 			@QueryParam("estado") Boolean estado,
 			
 			@QueryParam("filterText")
@@ -39,34 +53,17 @@ public interface SucursalResource {
 			@QueryParam("maxResults") 
 			@Min(value = 1) Integer maxResults);
 	
-	@GET
-	@Path("/{id}")
-	public SucursalRepresentation findById(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id);
-
-	@GET
-	@Path("/abreviatura/{abreviatura}")
-	public SucursalRepresentation findByAbreviatura(
-			@PathParam("abreviatura") 
-			@NotNull 
-			@Size(min = 1, max = 60) String abreviatura);	
-	
-	@GET
-	@Path("/denominacion/{denominacion}")
-	public SucursalRepresentation findByDenominacion(
-			@PathParam("denominacion") 
-			@NotNull 
-			@Size(min = 1, max = 60) String denominacion);	
-
 	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(
 			@NotNull 
 			@Valid SucursalRepresentation rep);
 
 	@PUT
 	@Path("/{id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public void update(
 			@PathParam("id") 
 			@NotNull 
@@ -75,50 +72,20 @@ public interface SucursalResource {
 			@NotNull
 			@Valid SucursalRepresentation rep);
 
+	@POST
+	@Path("/{id}/desactivar")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public void desactivar(
+			@PathParam("id") 
+			@NotNull 
+			@Min(value = 1) Integer id);
+	
 	@DELETE
 	@Path("/{id}")
 	public void delete(
 			@PathParam("id") 
 			@NotNull 
 			@Min(value = 1) Integer id);
-
-	@POST
-	@Path("/{id}/desactivar")
-	public void desactivar(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id);
-
-	/**
-	 * Agencias
-	 * */
-	@GET
-	@Path("/{id}/agencias")
-	public List<AgenciaRepresentation> getAgencias(
-			@PathParam("id") 
-			@NotNull
-			@Min(value = 1) Integer id, 
-			
-			@QueryParam("estado") Boolean estado, 
-			
-			@QueryParam("filterText")
-			@Size(min = 0, max = 100) String filterText, 
-			
-			@QueryParam("firstResult") 
-			@Min(value = 0) Integer firstResult, 
-			
-			@QueryParam("maxResults") 
-			@Min(value = 1) Integer maxResults);
-	
-
-	@POST
-	@Path("/{id}/agencias")
-	public Response addAgencia(
-			@PathParam("id") 
-			@NotNull
-			@Min(value = 1) Integer id, 
-			
-			@NotNull
-			@Valid AgenciaRepresentation agenciaRepresentation);
 
 }

@@ -2,4 +2,6 @@ dependencies {
 	compile project(':rrhh-integration:rrhh-client')
 	compile project(':rrhh-model:rrhh-model-api')
 	compile project(':rrhh-model:rrhh-model-jpa')	
+	
+	compile 'org.jboss.ejb3:jboss-ejb3-ext-api:2.1.0'
 }

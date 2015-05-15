@@ -11,6 +11,7 @@ import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.jpa.entities.AgenciaEntity;
+import org.sistcoop.rrhh.models.jpa.entities.SucursalEntity;
 import org.sistcoop.rrhh.models.jpa.entities.TrabajadorEntity;
 
 public class AgenciaAdapter implements AgenciaModel {
@@ -96,7 +97,13 @@ public class AgenciaAdapter implements AgenciaModel {
 
 	@Override
 	public SucursalModel getSucursal() {
-		return new SucursalAdapter(em, agenciaEntity.getSucursal());
+		SucursalEntity entity = agenciaEntity.getSucursal();
+		if(entity != null) {
+			return new SucursalAdapter(em, agenciaEntity.getSucursal());	
+		}		
+		else {
+			return null;
+		}
 	}
 
 	@Override

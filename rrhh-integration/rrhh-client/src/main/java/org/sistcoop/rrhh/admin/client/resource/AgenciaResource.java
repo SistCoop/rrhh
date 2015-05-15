@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -19,36 +18,34 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
-import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
-import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-@Path("/agencias")
+@Path("/sucursales/{sucursal}/agencias")
 public interface AgenciaResource {
-
 	
 	@GET
-	@Path("/{id}")
+	@Path("/{agencia}")
 	public AgenciaRepresentation getAgenciaById(
-			@PathParam("id") 
+			@PathParam("sucursal") 
+			@NotNull
+			@Min(value = 1) Integer idSucursal,
+			
+			@PathParam("agencia") 
 			@NotNull 
-			@Min(value = 1) Integer id);
-
-	@GET
-	@Path("/codigo/{codigo}")
-	public AgenciaRepresentation getAgenciaByCodigo(
-			@PathParam("codigo") 
-			@NotNull 
-			@Pattern(regexp = "[0-9]+") 
-			@Size(min = 2, max = 2) String codigo);	
-
-	@GET
-	@Path("/{id}/trabajadores")
-	public List<TrabajadorRepresentation> getTrabajadores(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id, 
+			@Min(value = 1) Integer idAgencia);	
+	
+	@GET	
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<AgenciaRepresentation> getAgencias(
+			
+			@PathParam("sucursal") 
+			@NotNull
+			@Min(value = 1) Integer idSucursal, 
+			
+			@QueryParam("codigo") 						
+			@Size(min = 1, max = 20) String codigoAgencia,
 			
 			@QueryParam("estado") Boolean estado, 
 			
@@ -60,42 +57,41 @@ public interface AgenciaResource {
 			
 			@QueryParam("maxResults") 
 			@Min(value = 1) Integer maxResults);
-
+	
+	@POST	
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addAgencia(
+			@PathParam("sucursal") 
+			@NotNull
+			@Min(value = 1) Integer idSucursal, 
+			
+			@NotNull
+			@Valid AgenciaRepresentation agenciaRepresentation);
+	
 	@PUT
-	@Path("/{id}")
+	@Path("/{agencia}")
 	public void updateAgencia(
-			@PathParam("id")
+			@PathParam("sucursal") 
+			@NotNull
+			@Min(value = 1) Integer idSucursal,
+			
+			@PathParam("agencia")
 			@NotNull 
-			@Min(value = 1) Integer id, 
+			@Min(value = 1) Integer idAgencia, 
 			
 			@NotNull
 			@Valid AgenciaRepresentation agenciaRepresentation);
 
 	@POST
-	@Path("/{id}/desactivar")
+	@Path("/{agencia}/desactivar")
 	public void desactivar(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id);	
-	
-	@POST
-	@Path("/{id}/trabajadores")
-	public Response addTrabajador(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id, 
-			
+			@PathParam("sucursal") 
 			@NotNull
-			@Valid TrabajadorRepresentation rep);
-	
-	
-	/**
-	 * Sucursal*/
-	
-	@GET
-	@Path("/{id}/sucursal")
-	public SucursalRepresentation getSucursal(
-			@PathParam("id") 
+			@Min(value = 1) Integer idSucursal,
+			
+			@PathParam("agencia") 
 			@NotNull 
-			@Min(value = 1) Integer id);
+			@Min(value = 1) Integer idAgencia);	
+	
 }
