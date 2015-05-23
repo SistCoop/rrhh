@@ -34,40 +34,16 @@ public class SucursalResourceImpl implements SucursalResource {
 
 	@RolesAllowed(Roles.ver_sucursales)
 	@Override
-	public SucursalRepresentation findById(Integer id) {
-		SucursalModel model = sucursalProvider.getSucursalById(id);
+	public SucursalRepresentation findById(String sucursal) {
+		SucursalModel model = sucursalProvider.getSucursalByDenominacion(sucursal);
 		SucursalRepresentation rep = ModelToRepresentation.toRepresentation(model);
 		return rep;
 	}
 
 	@RolesAllowed(Roles.ver_sucursales)
 	@Override
-	public List<SucursalRepresentation> findAll(String abreviatura, String denominacion,
-			Boolean estado, String filterText, Integer firstResult, Integer maxResults) {
+	public List<SucursalRepresentation> findAll(String filterText, Integer firstResult, Integer maxResults) {
 		
-		//Si abreviatura existe
-		if(abreviatura != null) {
-			SucursalModel model = sucursalProvider.getSucursalByAbreviatura(abreviatura);
-			SucursalRepresentation rep = ModelToRepresentation.toRepresentation(model);
-			List<SucursalRepresentation> results = new ArrayList<>(1);
-			if(rep != null) {
-				results.add(rep);	
-			}			
-			return results;
-		}
-		
-		//Si denominacion exist
-		if(denominacion != null) {
-			SucursalModel model = sucursalProvider.getSucursalByDenominacion(denominacion);
-			SucursalRepresentation rep = ModelToRepresentation.toRepresentation(model);			
-			List<SucursalRepresentation> results = new ArrayList<>(1);			
-			if(rep != null) {
-				results.add(rep);	
-			}
-			return results;
-		}
-		
-		//Si no existe denominacion ni abreviatura
 		if(filterText == null)
 			filterText = "";
 		if(firstResult == null)
@@ -76,12 +52,7 @@ public class SucursalResourceImpl implements SucursalResource {
 			maxResults = -1;		
 		
 		List<SucursalRepresentation> results = new ArrayList<SucursalRepresentation>();
-		List<SucursalModel> sucursalModels;
-		if (estado == null) {
-			sucursalModels = sucursalProvider.getSucursales(filterText, firstResult, maxResults);			
-		} else {			
-			sucursalModels = sucursalProvider.getSucursales(estado);
-		}
+		List<SucursalModel> sucursalModels = sucursalProvider.getSucursales(filterText, firstResult, maxResults);
 				
 		for (SucursalModel sucursalModel : sucursalModels) {			
 			results.add(ModelToRepresentation.toRepresentation(sucursalModel));			
@@ -94,31 +65,22 @@ public class SucursalResourceImpl implements SucursalResource {
 	@Override
 	public Response create(SucursalRepresentation rep) {		
 		SucursalModel model = representationToModel.createSucursal(rep, sucursalProvider);
-		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getId().toString()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getId()).build();
+		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getDenominacion()).build();
 	}
 
 	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
-	public void update(Integer id, SucursalRepresentation rep) {
-		SucursalModel model = sucursalProvider.getSucursalById(id);
-		model.setAbreviatura(rep.getAbreviatura());
+	public void update(String sucursal, SucursalRepresentation rep) {
+		SucursalModel model = sucursalProvider.getSucursalByDenominacion(sucursal);		
 		model.setDenominacion(rep.getDenominacion());
 		model.commit();	
 	}
 
 	@RolesAllowed(Roles.eliminar_sucursales)
 	@Override
-	public void delete(Integer id) {
-		SucursalModel model = sucursalProvider.getSucursalById(id);
+	public void delete(String sucursal) {
+		SucursalModel model = sucursalProvider.getSucursalByDenominacion(sucursal);
 		sucursalProvider.removeSucursal(model);
-	}
-
-	@RolesAllowed(Roles.eliminar_sucursales)
-	@Override
-	public void desactivar(Integer id) {
-		SucursalModel model = sucursalProvider.getSucursalById(id);
-		model.desactivar();
-		model.commit();
 	}
 	
 }

@@ -18,32 +18,26 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 
 @Path("/sucursales")
 public interface SucursalResource {
 	
 	@GET
-	@Path("/{id}")
+	@Path("/{sucursal}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public SucursalRepresentation findById(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id);
+			@PathParam("sucursal") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal);
 
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<SucursalRepresentation> findAll(
-			@QueryParam("abreviatura") 			
-			@Size(min = 1, max = 60) String abreviatura,
-			
-			@QueryParam("denominacion") 			
-			@Size(min = 1, max = 60) String denominacion,
-			
-			@QueryParam("estado") Boolean estado,
-			
 			@QueryParam("filterText")
 			@Size(min = 0, max = 100) String filterText, 
 			
@@ -61,31 +55,24 @@ public interface SucursalResource {
 			@Valid SucursalRepresentation rep);
 
 	@PUT
-	@Path("/{id}")
+	@Path("/{sucursal}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public void update(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id, 
+			@PathParam("sucursal") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal, 
 			
 			@NotNull
 			@Valid SucursalRepresentation rep);
-
-	@POST
-	@Path("/{id}/desactivar")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public void desactivar(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id);
 	
 	@DELETE
-	@Path("/{id}")
+	@Path("/{sucursal}")
 	public void delete(
-			@PathParam("id") 
-			@NotNull 
-			@Min(value = 1) Integer id);
+			@PathParam("sucursal") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal);
 
 }

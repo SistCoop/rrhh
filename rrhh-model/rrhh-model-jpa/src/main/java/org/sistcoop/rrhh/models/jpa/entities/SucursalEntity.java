@@ -10,29 +10,17 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(
-		name = "SUCURSAL", 
-		indexes = { @Index(columnList = "id") } )
-@NamedQueries({ 
-	@NamedQuery(name = SucursalEntity.findAll, query = "SELECT s FROM SucursalEntity s"), 
-	@NamedQuery(name = SucursalEntity.findByAbreviatura, query = "SELECT s FROM SucursalEntity s WHERE s.abreviatura = :abreviatura"),
-	@NamedQuery(name = SucursalEntity.findByDenominacion, query = "SELECT s FROM SucursalEntity s WHERE s.denominacion = :denominacion"),
-	@NamedQuery(name = SucursalEntity.findByEstado, query = "SELECT s FROM SucursalEntity s WHERE s.estado = :estado"),
-	@NamedQuery(name = SucursalEntity.findByFilterText, query = "SELECT s FROM SucursalEntity s WHERE (UPPER(s.denominacion) LIKE :filterText OR s.abreviatura LIKE :filterText) AND s.estado = TRUE")})
+@Table(name = "SUCURSAL")
 public class SucursalEntity implements Serializable {
 
 	/**
@@ -40,21 +28,12 @@ public class SucursalEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public static final String base = "org.softgreen.sistcoop.organizacion.ejb.models.jpa.entities.SucursalEntity.";
-	public static final String findAll = base + "findAll";
-	public static final String findByAbreviatura = base + "findByAbreviatura";
-	public static final String findByDenominacion = base + "findByDenominacion";
-	public static final String findByEstado = base + "findByEstado";
-	public static final String findByFilterText = base + "findByFilterText";//por defecto solo busca activos
-
 	private Integer id;
 	private String denominacion;
-	private String abreviatura;
-	private boolean estado;
 
 	private Set<AgenciaEntity> agencias = new HashSet<AgenciaEntity>();
 
-	private Timestamp optlk;	
+	private Timestamp optlk;
 
 	@Id
 	@GeneratedValue(generator = "SgGenericGenerator")
@@ -70,8 +49,8 @@ public class SucursalEntity implements Serializable {
 	@NotNull
 	@Size(min = 1, max = 60)
 	@NotBlank
-	@NotEmpty	
-	@Column(name = "DENOMINACION", unique = true)
+	@NaturalId
+	@Column(name = "DENOMINACION")
 	public String getDenominacion() {
 		return denominacion;
 	}
@@ -80,31 +59,7 @@ public class SucursalEntity implements Serializable {
 		this.denominacion = denominacion;
 	}
 
-	@NotNull
-	@Size(min = 1, max = 30)
-	@NotBlank
-	@NotEmpty
-	@Column(name = "ABREVIATURA", unique = true)
-	public String getAbreviatura() {
-		return abreviatura;
-	}
-
-	public void setAbreviatura(String abreviatura) {
-		this.abreviatura = abreviatura;
-	}
-
-	@NotNull
-	@Type(type = "org.hibernate.type.TrueFalseType")
-	@Column(name = "ESTADO")
-	public boolean isEstado() {
-		return estado;
-	}
-
-	public void setEstado(boolean estado) {
-		this.estado = estado;
-	}
-
-	@OneToMany(fetch= FetchType.LAZY, mappedBy = "sucursal")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sucursal")
 	public Set<AgenciaEntity> getAgencias() {
 		return agencias;
 	}
@@ -112,7 +67,7 @@ public class SucursalEntity implements Serializable {
 	public void setAgencias(Set<AgenciaEntity> agencias) {
 		this.agencias = agencias;
 	}
-	
+
 	@Version
 	public Timestamp getOptlk() {
 		return optlk;
@@ -127,7 +82,7 @@ public class SucursalEntity implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((abreviatura == null) ? 0 : abreviatura.hashCode());
+				+ ((denominacion == null) ? 0 : denominacion.hashCode());
 		return result;
 	}
 
@@ -140,12 +95,12 @@ public class SucursalEntity implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		SucursalEntity other = (SucursalEntity) obj;
-		if (abreviatura == null) {
-			if (other.abreviatura != null)
+		if (denominacion == null) {
+			if (other.denominacion != null)
 				return false;
-		} else if (!abreviatura.equals(other.abreviatura))
+		} else if (!denominacion.equals(other.denominacion))
 			return false;
 		return true;
 	}
-	
+
 }

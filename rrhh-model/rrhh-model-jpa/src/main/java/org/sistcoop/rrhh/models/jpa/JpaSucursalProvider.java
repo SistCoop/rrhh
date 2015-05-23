@@ -31,11 +31,9 @@ public class JpaSucursalProvider implements SucursalProvider {
 	}
 
 	@Override
-	public SucursalModel addSucursal(String abreviatura, String denominacion) {
-		SucursalEntity sucursalEntity = new SucursalEntity();
-		sucursalEntity.setAbreviatura(abreviatura);
+	public SucursalModel addSucursal(String denominacion) {
+		SucursalEntity sucursalEntity = new SucursalEntity();		
 		sucursalEntity.setDenominacion(denominacion);
-		sucursalEntity.setEstado(true);
 		em.persist(sucursalEntity);
 		return new SucursalAdapter(em, sucursalEntity);
 	}
@@ -51,27 +49,9 @@ public class JpaSucursalProvider implements SucursalProvider {
 	}
 
 	@Override
-	public SucursalModel getSucursalById(Integer id) {
-		SucursalEntity sucursalEntity = this.em.find(SucursalEntity.class, id);
-		return sucursalEntity != null ? new SucursalAdapter(em, sucursalEntity) : null;
-	}
-
-	@Override
-	public SucursalModel getSucursalByAbreviatura(String abreviatura) {
-		SucursalModel result = null;
-		TypedQuery<SucursalEntity> query = em.createNamedQuery(SucursalEntity.findByAbreviatura, SucursalEntity.class);
-		query.setParameter("abreviatura", abreviatura);
-		List<SucursalEntity> list = query.getResultList();
-		for (SucursalEntity entity : list) {
-			result = new SucursalAdapter(em, entity);
-		}
-		return result;
-	}
-	
-	@Override
 	public SucursalModel getSucursalByDenominacion(String denominacion) {
 		SucursalModel result = null;
-		TypedQuery<SucursalEntity> query = em.createNamedQuery(SucursalEntity.findByDenominacion, SucursalEntity.class);
+		TypedQuery<SucursalEntity> query = em.createQuery("SELECT s FROM SucursalEntity s WHERE s.denominacion = :denominacion", SucursalEntity.class);
 		query.setParameter("denominacion", denominacion);
 		List<SucursalEntity> list = query.getResultList();
 		for (SucursalEntity entity : list) {
@@ -82,13 +62,7 @@ public class JpaSucursalProvider implements SucursalProvider {
 
 	@Override
 	public List<SucursalModel> getSucursales() {
-		return getSucursales(true);
-	}
-
-	@Override
-	public List<SucursalModel> getSucursales(boolean estado) {
-		TypedQuery<SucursalEntity> query = em.createNamedQuery(SucursalEntity.findByEstado, SucursalEntity.class);
-		query.setParameter("estado", estado);
+		TypedQuery<SucursalEntity> query = em.createQuery("SELECT s FROM SucursalEntity s", SucursalEntity.class);		
 		List<SucursalEntity> list = query.getResultList();
 		List<SucursalModel> results = new ArrayList<SucursalModel>();
 		for (SucursalEntity entity : list) {
@@ -99,7 +73,7 @@ public class JpaSucursalProvider implements SucursalProvider {
 
 	@Override
 	public List<SucursalModel> getSucursales(String filterText, int firstResult, int maxResults) {		
-		TypedQuery<SucursalEntity> query = em.createNamedQuery(SucursalEntity.findByFilterText, SucursalEntity.class);
+		TypedQuery<SucursalEntity> query = em.createQuery("SELECT s FROM SucursalEntity s WHERE s.denominacion LIKE :filterText", SucursalEntity.class);
 		if (filterText == null)
 			filterText = "";
 		if (firstResult != -1) {
@@ -108,7 +82,7 @@ public class JpaSucursalProvider implements SucursalProvider {
 		if (maxResults != -1) {
 			query.setMaxResults(maxResults);
 		}		
-		query.setParameter("filterText", "%" + filterText.toUpperCase() + "%");
+		query.setParameter("filterText", "%" + filterText + "%");
 		List<SucursalEntity> list = query.getResultList();		
 		List<SucursalModel> results = new ArrayList<SucursalModel>();		
 		for (SucursalEntity entity : list) {			

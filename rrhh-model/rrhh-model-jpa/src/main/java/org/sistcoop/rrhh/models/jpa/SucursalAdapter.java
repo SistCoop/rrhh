@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.SucursalModel;
@@ -28,13 +27,14 @@ public class SucursalAdapter implements SucursalModel {
 		return sucursalEntity;
 	}
 
-	public static SucursalEntity toSucursalEntity(SucursalModel model, EntityManager em) {
+	public static SucursalEntity toSucursalEntity(SucursalModel model,
+			EntityManager em) {
 		if (model instanceof SucursalAdapter) {
 			return ((SucursalAdapter) model).getSucursalEntity();
 		}
 		return em.getReference(SucursalEntity.class, model.getId());
 	}
-	
+
 	@Override
 	public void commit() {
 		em.merge(sucursalEntity);
@@ -56,69 +56,23 @@ public class SucursalAdapter implements SucursalModel {
 	}
 
 	@Override
-	public String getAbreviatura() {
-		return sucursalEntity.getAbreviatura();
-	}
-
-	@Override
-	public void setAbreviatura(String abreviatura) {
-		sucursalEntity.setAbreviatura(abreviatura);
-	}
-
-	@Override
-	public boolean getEstado() {
-		return sucursalEntity.isEstado();
-	}
-
-	@Override
-	public void desactivar() {
-		sucursalEntity.setEstado(false);
-	}
-
-	@Override
 	public List<AgenciaModel> getAgencias() {
-		return getAgencias(true);
-	}
-
-	@Override
-	public List<AgenciaModel> getAgencias(boolean estado) {
 		Set<AgenciaEntity> list = sucursalEntity.getAgencias();
 		List<AgenciaModel> result = new ArrayList<AgenciaModel>();
 		for (AgenciaEntity entity : list) {
-			if (entity.isEstado() == estado)
-				result.add(new AgenciaAdapter(em, entity));
+			result.add(new AgenciaAdapter(em, entity));
 		}
 		return result;
-	}
-
-	@Override
-	public List<AgenciaModel> getAgencias(String filterText, int firstResult, int maxResults) {
-		TypedQuery<AgenciaEntity> query = em.createNamedQuery(AgenciaEntity.findBySucursalAndFilterText, AgenciaEntity.class);
-		if (filterText == null)
-			filterText = "";
-		if (firstResult != -1) {
-			query.setFirstResult(firstResult);
-		}
-		if (maxResults != -1) {
-			query.setMaxResults(maxResults);
-		}
-
-		query.setParameter("idSucursal", sucursalEntity.getId());
-		query.setParameter("filterText", "%" + filterText.toUpperCase() + "%");
-		List<AgenciaEntity> list = query.getResultList();
-		List<AgenciaModel> results = new ArrayList<AgenciaModel>();
-		for (AgenciaEntity entity : list) {
-			results.add(new AgenciaAdapter(em, entity));
-		}
-		return results;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((getAbreviatura() == null) ? 0 : getAbreviatura().hashCode());
+		result = prime
+				* result
+				+ ((getDenominacion() == null) ? 0 : getDenominacion()
+						.hashCode());
 		return result;
 	}
 
@@ -131,11 +85,12 @@ public class SucursalAdapter implements SucursalModel {
 		if (getClass() != obj.getClass())
 			return false;
 		SucursalModel other = (SucursalModel) obj;
-		if (getAbreviatura() == null) {
-			if (other.getAbreviatura() != null)
+		if (getDenominacion() == null) {
+			if (other.getDenominacion() != null)
 				return false;
-		} else if (!getAbreviatura().equals(other.getAbreviatura()))
+		} else if (!getDenominacion().equals(other.getDenominacion()))
 			return false;
 		return true;
 	}
+
 }

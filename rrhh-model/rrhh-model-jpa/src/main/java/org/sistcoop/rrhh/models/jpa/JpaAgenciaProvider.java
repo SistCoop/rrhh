@@ -32,18 +32,15 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 	}
 
 	@Override
-	public AgenciaModel addAgencia(SucursalModel sucursal, String codigo, String abreviatura, String denominacion, String ubigeo, String direccion) {
+	public AgenciaModel addAgencia(SucursalModel sucursal, String denominacion, String ubigeo, String direccion) {
 		AgenciaEntity agenciaEntity = new AgenciaEntity();
 
 		SucursalEntity sucursalEntity = SucursalAdapter.toSucursalEntity(sucursal, em);
 		agenciaEntity.setSucursal(sucursalEntity);
 
-		agenciaEntity.setCodigo(codigo);
-		agenciaEntity.setAbreviatura(abreviatura);
 		agenciaEntity.setDenominacion(denominacion);
 		agenciaEntity.setDireccion(direccion);
-		agenciaEntity.setUbigeo(ubigeo);
-		agenciaEntity.setEstado(true);
+		agenciaEntity.setUbigeo(ubigeo);		
 		em.persist(agenciaEntity);
 		return new AgenciaAdapter(em, agenciaEntity);
 	}
@@ -59,20 +56,25 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 	}
 
 	@Override
-	public AgenciaModel getAgenciaById(Integer id) {
-		AgenciaEntity agenciaEntity = this.em.find(AgenciaEntity.class, id);
-		return agenciaEntity != null ? new AgenciaAdapter(em, agenciaEntity) : null;
+	public AgenciaModel getAgenciaByDenominacion(SucursalModel sucursal, String denominacion) {
+		SucursalEntity sucursalEntity = SucursalAdapter.toSucursalEntity(sucursal, em);
+		
+		TypedQuery<AgenciaEntity> query = em.createQuery("SELECT a FROM AgenciaEntity a WHERE a.sucursal.denominacion=:sucursal AND a.denominacion = :agencia", AgenciaEntity.class);	
+		query.setParameter("sucursal", sucursalEntity.getDenominacion());
+		query.setParameter("agencia", denominacion);
+		AgenciaEntity result = query.getSingleResult();
+		if(result != null) {
+			return new AgenciaAdapter(em, result);
+		} else {
+			return null;
+		}
 	}
 
 	@Override
-	public AgenciaModel getAgenciaByCodigo(String codigo) {
-		TypedQuery<AgenciaEntity> query = em.createNamedQuery(AgenciaEntity.findByCodigo, AgenciaEntity.class);
-		query.setParameter("codigo", codigo);
-		List<AgenciaEntity> list = query.getResultList();
-		if (list.size() > 0)
-			return new AgenciaAdapter(em, list.get(0));
-		else
-			return null;
+	public List<AgenciaModel> getAgencias(SucursalModel sucursal,
+			String filterText, int firstResult, int maxResults) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

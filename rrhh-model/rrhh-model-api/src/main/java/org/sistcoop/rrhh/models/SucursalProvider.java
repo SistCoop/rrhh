@@ -9,19 +9,13 @@ import org.sistcoop.rrhh.provider.Provider;
 @Local
 public interface SucursalProvider extends Provider {
 
-	SucursalModel addSucursal(String abreviatura, String denominacion);
+	SucursalModel addSucursal(String abreviatura);
 
 	boolean removeSucursal(SucursalModel sucursalModel);
 
-	SucursalModel getSucursalById(Integer id);
-
-	SucursalModel getSucursalByAbreviatura(String abreviatura);
-	
 	SucursalModel getSucursalByDenominacion(String denominacion);
 
 	List<SucursalModel> getSucursales();
-
-	List<SucursalModel> getSucursales(boolean estado);
 
 	List<SucursalModel> getSucursales(String filterText, int firstResult, int maxResults);
 

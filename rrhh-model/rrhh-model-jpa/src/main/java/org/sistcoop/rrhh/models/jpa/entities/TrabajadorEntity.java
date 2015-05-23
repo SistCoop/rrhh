@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -26,7 +25,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name = "TRABAJADOR", indexes = { @Index(columnList = "id") })
+@Table(name = "TRABAJADOR")
 @NamedQueries(value = {		
 		@NamedQuery(name = TrabajadorEntity.findByTipoAndNumeroDocumento, query = "SELECT t FROM TrabajadorEntity t WHERE t.tipoDocumento = :tipoDocumento AND t.numeroDocumento = :numeroDocumento AND t.estado = TRUE"),
 		@NamedQuery(name = TrabajadorEntity.findByAgenciaAndFilterText, query = "SELECT t FROM TrabajadorEntity t WHERE t.agencia.id = :idAgencia AND ( t.numeroDocumento LIKE :filterText ) AND t.estado = TRUE") })

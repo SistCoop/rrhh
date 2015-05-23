@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -36,41 +35,15 @@ public class AgenciaResourceImpl implements AgenciaResource {
 	
 	@RolesAllowed(Roles.ver_agencias)
 	@Override
-	public AgenciaRepresentation getAgenciaById(Integer idSucursal, Integer idAgencia) {
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);		
-		
-		if(sucursalModel.equals(agenciaModel.getSucursal())) {
-			return ModelToRepresentation.toRepresentation(agenciaModel);	
-		} else {
-			throw new BadRequestException();
-		}
+	public AgenciaRepresentation getAgenciaById(String sucursal, String agencia) {
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);		
+		AgenciaModel agenciaModel = agenciaProvider.getAgenciaByDenominacion(sucursalModel, agencia);
+		return ModelToRepresentation.toRepresentation(agenciaModel);
 	}
 
 	@RolesAllowed(Roles.ver_agencias)
 	@Override
-	public List<AgenciaRepresentation> getAgencias(Integer idSucursal, String codigoAgencia, Boolean estado,
-			String filterText, Integer firstResult, Integer maxResults) {
-
-		//si codigo agencia existe
-		if(codigoAgencia != null){			
-						
-			AgenciaModel agenciaModel = agenciaProvider.getAgenciaByCodigo(codigoAgencia);
-			
-			//no se encontro la agencia
-			if(agenciaModel == null) {
-				return new ArrayList<>(0);
-			}
-			
-			//agencia encontrada
-			List<AgenciaRepresentation> result = new ArrayList<>(1);
-			if(agenciaModel != null) {					
-				result.add( ModelToRepresentation.toRepresentation(agenciaModel));
-			}
-			return result;	
-			
-		}		
-		
+	public List<AgenciaRepresentation> getAgencias(String sucursal, String filterText, Integer firstResult, Integer maxResults) {	
 		if(filterText == null)
 			filterText = "";
 		if(firstResult == null)
@@ -78,8 +51,8 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		if(maxResults == null)
 			maxResults = -1;
 		
-		SucursalModel model = sucursalProvider.getSucursalById(idSucursal);
-		List<AgenciaModel> agenciaModels = model.getAgencias(filterText, firstResult, maxResults);
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
+		List<AgenciaModel> agenciaModels = agenciaProvider.getAgencias(sucursalModel, filterText, firstResult, maxResults);
 		List<AgenciaRepresentation> result = new ArrayList<AgenciaRepresentation>();
 		for (AgenciaModel agenciaModel : agenciaModels) {
 			result.add(ModelToRepresentation.toRepresentation(agenciaModel));
@@ -89,30 +62,24 @@ public class AgenciaResourceImpl implements AgenciaResource {
 
 	@RolesAllowed(Roles.administrar_agencias)
 	@Override
-	public Response addAgencia(Integer idSucursal, AgenciaRepresentation agenciaRepresentation) {
+	public Response addAgencia(String sucursal, AgenciaRepresentation agenciaRepresentation) {
 
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel model = agenciaProvider.addAgencia(
-				sucursalModel, agenciaRepresentation.getCodigo(), 
-				agenciaRepresentation.getAbreviatura(), 
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
+		AgenciaModel model = agenciaProvider.addAgencia(	
+				sucursalModel,
 				agenciaRepresentation.getDenominacion(), 
 				agenciaRepresentation.getUbigeo(), 
 				agenciaRepresentation.getDireccion());
 		
-		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getId().toString()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getId()).build();
+		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getDenominacion()).build();
 	}
 	
 	@RolesAllowed(Roles.administrar_agencias)
 	@Override
-	public void updateAgencia(Integer idSucursal, Integer idAgencia, AgenciaRepresentation agenciaRepresentation) {
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);
+	public void updateAgencia(String sucursal, String agencia, AgenciaRepresentation agenciaRepresentation) {
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
+		AgenciaModel agenciaModel = agenciaProvider.getAgenciaByDenominacion(sucursalModel, agencia);
 		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();	
-		}
-		
-		agenciaModel.setAbreviatura(agenciaRepresentation.getAbreviatura());
 		agenciaModel.setDenominacion(agenciaRepresentation.getDenominacion());
 		agenciaModel.setUbigeo(agenciaRepresentation.getUbigeo());
 		agenciaModel.setDireccion(agenciaRepresentation.getDireccion());
@@ -122,16 +89,10 @@ public class AgenciaResourceImpl implements AgenciaResource {
 
 	@RolesAllowed(Roles.eliminar_agencias)
 	@Override
-	public void desactivar(Integer idSucursal, Integer idAgencia) {
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);
-		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();	
-		}
-		
-		agenciaModel.desactivar();
-		agenciaModel.commit();
+	public void remove(String sucursal, String agencia) {
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
+		AgenciaModel agenciaModel = agenciaProvider.getAgenciaByDenominacion(sucursalModel, agencia);		
+		agenciaProvider.removeAgencia(agenciaModel);
 	}
 
 }

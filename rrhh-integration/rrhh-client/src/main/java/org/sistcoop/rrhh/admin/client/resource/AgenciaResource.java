@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -17,6 +18,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.hibernate.validator.constraints.NotBlank;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 
 @Consumes(MediaType.APPLICATION_JSON)
@@ -29,25 +31,22 @@ public interface AgenciaResource {
 	public AgenciaRepresentation getAgenciaById(
 			@PathParam("sucursal") 
 			@NotNull
-			@Min(value = 1) Integer idSucursal,
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal,
 			
 			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia);	
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String agencia);	
 	
 	@GET	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<AgenciaRepresentation> getAgencias(
-			
 			@PathParam("sucursal") 
 			@NotNull
-			@Min(value = 1) Integer idSucursal, 
-			
-			@QueryParam("codigo") 						
-			@Size(min = 1, max = 20) String codigoAgencia,
-			
-			@QueryParam("estado") Boolean estado, 
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal, 
 			
 			@QueryParam("filterText")
 			@Size(min = 0, max = 100) String filterText, 
@@ -64,7 +63,8 @@ public interface AgenciaResource {
 	public Response addAgencia(
 			@PathParam("sucursal") 
 			@NotNull
-			@Min(value = 1) Integer idSucursal, 
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal, 
 			
 			@NotNull
 			@Valid AgenciaRepresentation agenciaRepresentation);
@@ -74,24 +74,28 @@ public interface AgenciaResource {
 	public void updateAgencia(
 			@PathParam("sucursal") 
 			@NotNull
-			@Min(value = 1) Integer idSucursal,
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal,
 			
-			@PathParam("agencia")
-			@NotNull 
-			@Min(value = 1) Integer idAgencia, 
+			@PathParam("agencia") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String agencia, 
 			
 			@NotNull
 			@Valid AgenciaRepresentation agenciaRepresentation);
 
-	@POST
-	@Path("/{agencia}/desactivar")
-	public void desactivar(
+	@DELETE
+	@Path("/{agencia}")
+	public void remove(
 			@PathParam("sucursal") 
 			@NotNull
-			@Min(value = 1) Integer idSucursal,
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal,
 			
 			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia);	
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String agencia);	
 	
 }

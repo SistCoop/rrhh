@@ -1,5 +1,7 @@
 package org.sistcoop.rrhh.models;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import org.sistcoop.rrhh.provider.Provider;
@@ -7,12 +9,12 @@ import org.sistcoop.rrhh.provider.Provider;
 @Local
 public interface AgenciaProvider extends Provider {
 
-	AgenciaModel addAgencia(SucursalModel sucursal, String codigo, String abreviatura, String denominacion, String ubigeo, String direccion);
+	AgenciaModel addAgencia(SucursalModel sucursal, String denominacion, String ubigeo, String direccion);
 
 	boolean removeAgencia(AgenciaModel agenciaModel);
 
-	AgenciaModel getAgenciaById(Integer id);
+	AgenciaModel getAgenciaByDenominacion(SucursalModel sucursal, String denominacion);
 
-	AgenciaModel getAgenciaByCodigo(String codigo);
-
+	List<AgenciaModel> getAgencias(SucursalModel sucursal, String filterText, int firstResult, int maxResults);
+	
 }

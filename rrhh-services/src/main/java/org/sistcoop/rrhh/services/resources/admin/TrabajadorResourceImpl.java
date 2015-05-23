@@ -6,9 +6,7 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.ejb3.annotation.SecurityDomain;
@@ -21,7 +19,6 @@ import org.sistcoop.rrhh.models.SucursalProvider;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
-import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Stateless
@@ -42,112 +39,42 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@RolesAllowed(Roles.ver_trabajadores)
 	@Override
-	public TrabajadorRepresentation findById(Integer idSucursal, Integer idAgencia, Integer id) {		
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);				
+	public TrabajadorRepresentation findById(Integer id) {					
 		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
-		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();
-		}
-		if(!agenciaModel.equals(trabajadorModel.getAgencia())) {
-			throw new BadRequestException();
-		}
-		
 		return ModelToRepresentation.toRepresentation(trabajadorModel);
 	}
 
 	@RolesAllowed(Roles.ver_trabajadores)
 	@Override
-	public TrabajadorRepresentation findByTipoNumeroDocumento(
-			Integer idSucursal, Integer idAgencia,
-			String tipoDocumento, String numeroDocumento) {
+	public TrabajadorRepresentation findByTipoNumeroDocumento(String sucursal,
+			String agencia, String tipoDocumento, String numeroDocumento) {
 		
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);				
+		SucursalModel sucursalModel =  null; 
+		if(sucursal != null) {
+			sucursalProvider.getSucursalByDenominacion(sucursal);
+		}
+		
+		AgenciaModel agenciaModel = null;
+		if(agencia != null) {
+			agenciaModel = agenciaProvider.getAgenciaByDenominacion(sucursalModel, agencia);
+		}
+		
 		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorByTipoNumeroDocumento(tipoDocumento, numeroDocumento);
+		if(trabajadorModel != null) {			
+			if (agencia != null) {
+				if (!agenciaModel.equals(trabajadorModel.getAgencia())) {
+					return null;
+				}
+			}			
+		} 
 		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();
-		}
-		if(!agenciaModel.equals(trabajadorModel.getAgencia())) {
-			throw new BadRequestException();
-		}
-				
-		return ModelToRepresentation.toRepresentation(trabajadorModel);
-	}
-
-	@RolesAllowed(Roles.administrar_trabajadores)
-	@Override
-	public void update(Integer idSucursal, Integer idAgencia,
-			Integer idTrabajador, TrabajadorRepresentation rep) {
+		return ModelToRepresentation.toRepresentation(trabajadorModel);	
 		
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);				
-		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);
-		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();
-		}
-		if(!agenciaModel.equals(trabajadorModel.getAgencia())) {
-			throw new BadRequestException();
-		}
-				
-		
-		AgenciaModel agenciaNuevaModel = null;
-				
-		AgenciaRepresentation agenciaRepresentation = rep.getAgencia();
-		Integer idNuevaAgencia = agenciaRepresentation.getId();
-		String codigoAgencia = agenciaRepresentation.getCodigo();
-		if(idNuevaAgencia != null) {
-			agenciaNuevaModel = agenciaProvider.getAgenciaById(idNuevaAgencia); 
-		} else if (codigoAgencia != null) {
-			agenciaNuevaModel = agenciaProvider.getAgenciaByCodigo(codigoAgencia);
-		}
-		
-		trabajadorModel.setAgencia(agenciaNuevaModel);
-		trabajadorModel.commit();				
-	}
-
-	@RolesAllowed(Roles.eliminar_trabajadores)
-	@Override
-	public void delete(Integer idSucursal, Integer idAgencia, Integer idTrabajador) {
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);				
-		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);
-		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();
-		}
-		if(!agenciaModel.equals(trabajadorModel.getAgencia())) {
-			throw new BadRequestException();
-		}
-		
-		trabajadorProvider.removeTrabajador(trabajadorModel);
-	}
-
-	@RolesAllowed(Roles.eliminar_trabajadores)
-	@Override
-	public void desactivar(Integer idSucursal, Integer idAgencia, Integer idTrabajador) {
-		
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);				
-		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);
-		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();
-		}
-		if(!agenciaModel.equals(trabajadorModel.getAgencia())) {
-			throw new BadRequestException();
-		}
-				
-		trabajadorModel.desactivar();
-		trabajadorModel.commit();
 	}
 
 	@Override
-	public List<TrabajadorRepresentation> getTrabajadores(Integer idSucursal,
-			Integer idAgencia, Boolean estado, String filterText,
+	public List<TrabajadorRepresentation> getTrabajadores(String sucursal,
+			String agencia, Boolean estado, String filterText,
 			Integer firstResult, Integer maxResults) {
 		
 		if (filterText == null)
@@ -157,20 +84,12 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 		if (maxResults == null)
 			maxResults = -1;
 
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);
-		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();
-		}
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
+		AgenciaModel agenciaModel = agenciaProvider.getAgenciaByDenominacion(sucursalModel, agencia);
 		
 		List<TrabajadorRepresentation> results = new ArrayList<>();
 		List<TrabajadorModel> trabajadorModels;
-		if (estado == null) {
-			trabajadorModels = agenciaModel.getTrabajadores(filterText, firstResult, maxResults);
-		} else {
-			trabajadorModels = agenciaModel.getTrabajadores(estado);
-		}
+		trabajadorModels = agenciaModel.getTrabajadores();
 
 		for (TrabajadorModel trabajadorModel : trabajadorModels) {
 			results.add(ModelToRepresentation.toRepresentation(trabajadorModel));
@@ -178,21 +97,27 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 
 		return results;
 	}
-
+	
+	@RolesAllowed(Roles.administrar_trabajadores)
 	@Override
-	public Response addTrabajador(Integer idSucursal, Integer idAgencia,
-			TrabajadorRepresentation rep) {
+	public void update(Integer idTrabajador, TrabajadorRepresentation rep) {						
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);			
+		trabajadorModel.commit();				
+	}
 
-		SucursalModel sucursalModel = sucursalProvider.getSucursalById(idSucursal);
-		AgenciaModel agenciaModel = agenciaProvider.getAgenciaById(idAgencia);
-		
-		if(!sucursalModel.equals(agenciaModel.getSucursal())) {
-			throw new BadRequestException();
-		}
-		
-		TrabajadorModel trabajadorModel = trabajadorProvider.addTrabajador(agenciaModel, rep.getTipoDocumento(), rep.getNumeroDocumento());		
-		return Response.created(uriInfo.getAbsolutePathBuilder().path(trabajadorModel.getId().toString()).build()).header("Access-Control-Expose-Headers", "Location").entity(trabajadorModel.getId()).build();
-		
+	@RolesAllowed(Roles.eliminar_trabajadores)
+	@Override
+	public void delete(Integer idTrabajador) {			
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);
+		trabajadorProvider.removeTrabajador(trabajadorModel);
+	}
+
+	@RolesAllowed(Roles.eliminar_trabajadores)
+	@Override
+	public void desactivar(Integer idTrabajador) {			
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);	
+		trabajadorModel.desactivar();
+		trabajadorModel.commit();
 	}
 	
 }

@@ -17,25 +17,50 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-@Path("/sucursales/{sucursal}/agencias/{agencia}/trabajadores")
+@Path("/trabajadores")
 public interface TrabajadorResource {
+	
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	@Path("/{id}")
+	public TrabajadorRepresentation findById(
+			@PathParam("id") 
+			@NotNull 
+			@Min(value = 1) Integer idTrabajador);
 
+	@GET
+	@Path("/buscar")
+	public TrabajadorRepresentation findByTipoNumeroDocumento(
+			@QueryParam("sucursal") 		
+			@Size(min = 1, max = 60) String sucursal,
+			
+			@QueryParam("agencia") 		
+			@Size(min = 1, max = 60) String agencia, 
+			
+			@QueryParam("tipoDocumento") 
+			@NotNull 
+			@Size(min = 1, max = 20) 
+			String tipoDocumento, 
+			
+			@QueryParam("numeroDocumento")
+			@NotNull 
+			@Pattern(regexp = "[0-9]+")
+			@Size(min = 1, max = 20) String numeroDocumento);
+
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@GET	
 	public List<TrabajadorRepresentation> getTrabajadores(
 			
-			@PathParam("sucursal") 
-			@NotNull 
-			@Min(value = 1) Integer idSucursal, 
+			@QueryParam("sucursal") 		
+			@Size(min = 1, max = 60) String sucursal,
 			
-			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia, 
+			@QueryParam("agencia") 		
+			@Size(min = 1, max = 60) String agencia, 
 			
 			@QueryParam("estado") Boolean estado, 
 			
@@ -48,67 +73,10 @@ public interface TrabajadorResource {
 			@QueryParam("maxResults") 
 			@Min(value = 1) Integer maxResults);
 	
-	@POST	
-	public Response addTrabajador(
-			@PathParam("sucursal") 
-			@NotNull 
-			@Min(value = 1) Integer idSucursal, 
-			
-			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia, 
-			
-			@NotNull
-			@Valid TrabajadorRepresentation rep);
-	
-	@GET
-	@Path("/{trabajador}")
-	public TrabajadorRepresentation findById(
-			@PathParam("sucursal") 
-			@NotNull 
-			@Min(value = 1) Integer idSucursal, 
-			
-			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia,
-			
-			@PathParam("trabajador") 
-			@NotNull 
-			@Min(value = 1) Integer idTrabajador);
-
-	@GET
-	@Path("/buscar")
-	public TrabajadorRepresentation findByTipoNumeroDocumento(
-			@PathParam("sucursal") 
-			@NotNull 
-			@Min(value = 1) Integer idSucursal, 
-			
-			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia, 
-			
-			@QueryParam("tipoDocumento") 
-			@NotNull 
-			@Size(min = 1, max = 20) 
-			String tipoDocumento, 
-			
-			@QueryParam("numeroDocumento")
-			@NotNull 
-			@Pattern(regexp = "[0-9]+")
-			@Size(min = 1, max = 20) String numeroDocumento);
-
 	@PUT
-	@Path("/{trabajador}")
-	public void update(
-			@PathParam("sucursal") 
-			@NotNull 
-			@Min(value = 1) Integer idSucursal, 
-			
-			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia,
-			
-			@PathParam("trabajador") 
+	@Path("/{id}")
+	public void update(			
+			@PathParam("id") 
 			@NotNull 
 			@Min(value = 1) Integer idTrabajador, 
 			
@@ -116,32 +84,16 @@ public interface TrabajadorResource {
 			@Valid TrabajadorRepresentation rep);
 
 	@DELETE
-	@Path("/{trabajador}")
+	@Path("/{id}")
 	public void delete(
-			@PathParam("sucursal") 
-			@NotNull 
-			@Min(value = 1) Integer idSucursal, 
-			
-			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia,
-			
-			@PathParam("trabajador") 
+			@PathParam("id") 
 			@NotNull 
 			@Min(value = 1) Integer idTrabajador);
 
 	@POST
-	@Path("/{trabajador}/desactivar")
+	@Path("/{id}/desactivar")
 	public void desactivar(
-			@PathParam("sucursal") 
-			@NotNull 
-			@Min(value = 1) Integer idSucursal, 
-			
-			@PathParam("agencia") 
-			@NotNull 
-			@Min(value = 1) Integer idAgencia,
-			
-			@PathParam("trabajador")
+			@PathParam("id")
 			@NotNull 
 			@Min(value = 1) Integer idTrabajador);
 	

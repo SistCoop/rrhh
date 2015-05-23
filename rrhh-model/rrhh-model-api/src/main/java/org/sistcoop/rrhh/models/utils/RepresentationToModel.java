@@ -19,12 +19,12 @@ import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 public class RepresentationToModel {
 
 	public SucursalModel createSucursal(SucursalRepresentation rep, SucursalProvider provider) {
-		SucursalModel model = provider.addSucursal(rep.getAbreviatura(), rep.getDenominacion());
+		SucursalModel model = provider.addSucursal(rep.getDenominacion());
 		return model;
 	}
 
 	public AgenciaModel createAgencia(SucursalModel sucursalModel, AgenciaRepresentation rep, AgenciaProvider agenciaProvider) {
-		AgenciaModel agenciaModel = agenciaProvider.addAgencia(sucursalModel, rep.getCodigo(), rep.getAbreviatura(), rep.getDenominacion(), rep.getUbigeo(), rep.getDireccion());
+		AgenciaModel agenciaModel = agenciaProvider.addAgencia(sucursalModel, rep.getDenominacion(), rep.getUbigeo(), rep.getDireccion());
 		return agenciaModel;
 	}
 	

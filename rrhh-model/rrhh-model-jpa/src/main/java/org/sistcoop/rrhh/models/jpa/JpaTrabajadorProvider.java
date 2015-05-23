@@ -35,7 +35,7 @@ public class JpaTrabajadorProvider implements TrabajadorProvider {
 	public TrabajadorModel addTrabajador(AgenciaModel agenciaModel, String tipoDocumento, String numeroDocumento) {
 		TrabajadorEntity trabajadorEntity = new TrabajadorEntity();
 
-		AgenciaEntity agenciaEntity = AgenciaAdapter.toSucursalEntity(agenciaModel, em);
+		AgenciaEntity agenciaEntity = AgenciaAdapter.toAgenciaEntity(agenciaModel, em);
 		trabajadorEntity.setAgencia(agenciaEntity);
 
 		trabajadorEntity.setTipoDocumento(tipoDocumento);

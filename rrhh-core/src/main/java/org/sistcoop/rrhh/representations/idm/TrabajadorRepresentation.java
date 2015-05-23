@@ -5,14 +5,8 @@ import java.io.Serializable;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "trabajador")
-@XmlAccessorType(XmlAccessType.PROPERTY)
 public class TrabajadorRepresentation implements Serializable {
 
 	/**
@@ -22,14 +16,15 @@ public class TrabajadorRepresentation implements Serializable {
 
 	private Integer id;
 	private String tipoDocumento;
-	private String numeroDocumento;	
+	private String numeroDocumento;
 	private Boolean estado;
+
+	private String usuario;
 
 	private AgenciaRepresentation agencia;
 	private AreaRepresentation area;
 	private CargoRepresentation cargo;
 
-	@XmlAttribute
 	@Min(value = 1)
 	public Integer getId() {
 		return id;
@@ -39,7 +34,6 @@ public class TrabajadorRepresentation implements Serializable {
 		this.id = id;
 	}
 
-	@XmlAttribute
 	@Size(min = 1, max = 20)
 	public String getTipoDocumento() {
 		return tipoDocumento;
@@ -49,7 +43,6 @@ public class TrabajadorRepresentation implements Serializable {
 		this.tipoDocumento = tipoDocumento;
 	}
 
-	@XmlAttribute
 	@Size(min = 1, max = 20)
 	public String getNumeroDocumento() {
 		return numeroDocumento;
@@ -59,7 +52,6 @@ public class TrabajadorRepresentation implements Serializable {
 		this.numeroDocumento = numeroDocumento;
 	}
 
-	@XmlAttribute
 	@AssertTrue
 	public Boolean isEstado() {
 		return estado;
@@ -67,6 +59,15 @@ public class TrabajadorRepresentation implements Serializable {
 
 	public void setEstado(Boolean estado) {
 		this.estado = estado;
+	}
+
+	@Size(min = 1, max = 60)
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
 	}
 
 	@XmlElement

@@ -76,7 +76,7 @@ public class TrabajadorAdapter implements TrabajadorModel {
 
 	@Override
 	public void setAgencia(AgenciaModel agenciaModel) {
-		AgenciaEntity agenciaEntity = AgenciaAdapter.toSucursalEntity(agenciaModel, em);
+		AgenciaEntity agenciaEntity = AgenciaAdapter.toAgenciaEntity(agenciaModel, em);
 		trabajadorEntity.setAgencia(agenciaEntity);
 	}
 

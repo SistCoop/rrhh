@@ -5,12 +5,12 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -19,20 +19,11 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@Table(name = "AGENCIA", indexes = { @Index(columnList = "id") })
-@NamedQueries(value = {
-		@NamedQuery(name = AgenciaEntity.findByCodigo, query = "SELECT a FROM AgenciaEntity a WHERE a.codigo = :codigo"),
-		@NamedQuery(name = AgenciaEntity.findByEstado, query = "SELECT a FROM AgenciaEntity a WHERE a.estado = :estado"),
-		@NamedQuery(name = AgenciaEntity.findByFilterText, query = "SELECT a FROM AgenciaEntity a WHERE a.codigo LIKE :filterText OR (UPPER(a.denominacion) LIKE :filterText OR a.abreviatura LIKE :filterText) AND a.estado = TRUE"),
-		@NamedQuery(name = AgenciaEntity.findBySucursalAndFilterText, query = "SELECT a FROM AgenciaEntity a WHERE a.sucursal.id = :idSucursal AND ( a.codigo LIKE :filterText OR (UPPER(a.denominacion) LIKE :filterText OR a.abreviatura LIKE :filterText) ) AND a.estado = TRUE")})
+@Table(name = "AGENCIA")
 public class AgenciaEntity implements Serializable {
 
 	/**
@@ -40,19 +31,11 @@ public class AgenciaEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public final static String base = "org.softgreen.sistcoop.organizacion.ejb.models.jpa.entities.Agencia.";
-	public final static String findByCodigo = base + "findByCodigo";
-	public final static String findByEstado = base + "findByEstado";
-	public static final String findByFilterText = base + "findByFilterText";//por defecto solo busca activos
-	public static final String findBySucursalAndFilterText = base + "findBySucursalAndFilterText";//por defecto solo busca activos	
-
-	private Integer id;
-	private String codigo;
+	private Integer id;	
 	private String denominacion;
-	private String abreviatura;
+	
 	private String direccion;
-	private String ubigeo;
-	private boolean estado;
+	private String ubigeo;	
 
 	private SucursalEntity sucursal;
 
@@ -65,7 +48,8 @@ public class AgenciaEntity implements Serializable {
 	}
 
 	@Id
-	@GeneratedValue(generator = "SgGenericGenerator")
+	@GeneratedValue(generator = "SgGenericGenerator")	
+	@Column(name = "ID")
 	public Integer getId() {
 		return id;
 	}
@@ -75,22 +59,10 @@ public class AgenciaEntity implements Serializable {
 	}
 
 	@NotNull
-	@Size(min = 2, max = 2)
-	@NotBlank
-	@NotEmpty
-	@NaturalId
-	public String getCodigo() {
-		return codigo;
-	}
-
-	public void setCodigo(String codigo) {
-		this.codigo = codigo;
-	}
-
-	@NotNull
 	@Size(min = 1, max = 60)
 	@NotBlank
-	@NotEmpty
+	@NaturalId
+	@Column(name = "DENOMINACION")
 	public String getDenominacion() {
 		return denominacion;
 	}
@@ -98,23 +70,11 @@ public class AgenciaEntity implements Serializable {
 	public void setDenominacion(String denominacion) {
 		this.denominacion = denominacion;
 	}
-
-	@NotNull
-	@Size(min = 1, max = 30)
-	@NotBlank
-	@NotEmpty
-	public String getAbreviatura() {
-		return abreviatura;
-	}
-
-	public void setAbreviatura(String abreviatura) {
-		this.abreviatura = abreviatura;
-	}
 	
 	@NotNull
 	@Size(min = 1, max = 150)
 	@NotBlank
-	@NotEmpty
+	@Column(name = "DIRECCION")
 	public String getDireccion() {
 		return direccion;
 	}
@@ -123,11 +83,10 @@ public class AgenciaEntity implements Serializable {
 		this.direccion = direccion;
 	}
 
-	
 	@NotNull
 	@Size(min = 6, max = 6)
 	@NotBlank
-	@NotEmpty
+	@Column(name = "UBIGEO")
 	public String getUbigeo() {
 		return ubigeo;
 	}
@@ -137,18 +96,9 @@ public class AgenciaEntity implements Serializable {
 	}
 
 	@NotNull
-	@Type(type = "org.hibernate.type.TrueFalseType")
-	public boolean isEstado() {
-		return estado;
-	}
-
-	public void setEstado(boolean estado) {
-		this.estado = estado;
-	}
-
-	@NotNull
+	@NaturalId
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(foreignKey = @ForeignKey)
+	@JoinColumn(foreignKey = @ForeignKey, name = "SUCURSAL_ID")
 	public SucursalEntity getSucursal() {
 		return sucursal;
 	}
@@ -179,7 +129,10 @@ public class AgenciaEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
+		result = prime * result
+				+ ((denominacion == null) ? 0 : denominacion.hashCode());
+		result = prime * result
+				+ ((sucursal == null) ? 0 : sucursal.hashCode());
 		return result;
 	}
 
@@ -189,16 +142,20 @@ public class AgenciaEntity implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof AgenciaEntity))
+		if (getClass() != obj.getClass())
 			return false;
 		AgenciaEntity other = (AgenciaEntity) obj;
-		if (codigo == null) {
-			if (other.codigo != null)
+		if (denominacion == null) {
+			if (other.denominacion != null)
 				return false;
-		} else if (!codigo.equals(other.codigo))
+		} else if (!denominacion.equals(other.denominacion))
+			return false;
+		if (sucursal == null) {
+			if (other.sucursal != null)
+				return false;
+		} else if (!sucursal.equals(other.sucursal))
 			return false;
 		return true;
 	}
-
 	
 }
