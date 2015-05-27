@@ -72,7 +72,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 				agenciaRepresentation.getUbigeo(), 
 				agenciaRepresentation.getDireccion());
 		
-		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getDenominacion()).build();
+		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").build();
 	}
 	
 	@RolesAllowed(Roles.administrar_agencias)
@@ -88,7 +88,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		
 	}
 
-	@RolesAllowed(Roles.eliminar_agencias)
+	@RolesAllowed(Roles.administrar_agencias)
 	@Override
 	public void remove(String sucursal, String agencia) {
 		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);

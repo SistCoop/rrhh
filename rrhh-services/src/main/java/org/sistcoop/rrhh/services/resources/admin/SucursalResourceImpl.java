@@ -7,6 +7,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.ejb3.annotation.SecurityDomain;
@@ -62,9 +63,9 @@ public class SucursalResourceImpl implements SucursalResource {
 
 	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
-	public void create(SucursalRepresentation rep) {		
-		representationToModel.createSucursal(rep, sucursalProvider);
-		//return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getDenominacion()).build();
+	public Response create(SucursalRepresentation rep) {		
+		SucursalModel model = representationToModel.createSucursal(rep, sucursalProvider);
+		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").build();
 	}
 
 	@RolesAllowed(Roles.administrar_sucursales)
