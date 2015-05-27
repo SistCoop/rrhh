@@ -73,6 +73,7 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 	}
 
 	@Override
+	@RolesAllowed(Roles.ver_trabajadores)
 	public List<TrabajadorRepresentation> getTrabajadores(String sucursal,
 			String agencia, Boolean estado, String filterText,
 			Integer firstResult, Integer maxResults) {
@@ -105,14 +106,14 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 		trabajadorModel.commit();				
 	}
 
-	@RolesAllowed(Roles.eliminar_trabajadores)
+	@RolesAllowed(Roles.administrar_trabajadores)
 	@Override
 	public void delete(Integer idTrabajador) {			
 		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);
 		trabajadorProvider.removeTrabajador(trabajadorModel);
 	}
 
-	@RolesAllowed(Roles.eliminar_trabajadores)
+	@RolesAllowed(Roles.administrar_trabajadores)
 	@Override
 	public void desactivar(Integer idTrabajador) {			
 		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(idTrabajador);	

@@ -8,7 +8,6 @@ public class Roles {
 	public final static String administrar_agencias = "administrar-agencias";
 
 	public final static String ver_trabajadores = "ver-trabajadores";
-	public final static String administrar_trabajadores = "administrar-trabajadores";
-	public final static String eliminar_trabajadores = "eliminar-trabajadores";
+	public final static String administrar_trabajadores = "administrar-trabajadores";	
 
 }
