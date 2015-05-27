@@ -18,6 +18,7 @@ import org.sistcoop.rrhh.models.AgenciaProvider;
 import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.SucursalProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
+import org.sistcoop.rrhh.models.utils.RepresentationToModel;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 
 @Stateless
@@ -29,6 +30,9 @@ public class AgenciaResourceImpl implements AgenciaResource {
 	
 	@Inject
 	private SucursalProvider sucursalProvider;
+	
+	@Inject
+	private RepresentationToModel representationToModel;
 	
 	@Context
 	protected UriInfo uriInfo;
@@ -64,13 +68,8 @@ public class AgenciaResourceImpl implements AgenciaResource {
 	@RolesAllowed(Roles.administrar_agencias)
 	@Override
 	public Response addAgencia(String sucursal, AgenciaRepresentation agenciaRepresentation) {
-
-		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
-		AgenciaModel model = agenciaProvider.addAgencia(	
-				sucursalModel,
-				agenciaRepresentation.getDenominacion(), 
-				agenciaRepresentation.getUbigeo(), 
-				agenciaRepresentation.getDireccion());
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);		
+		AgenciaModel model = representationToModel.createAgencia(sucursalModel, agenciaRepresentation, agenciaProvider);
 		
 		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").build();
 	}

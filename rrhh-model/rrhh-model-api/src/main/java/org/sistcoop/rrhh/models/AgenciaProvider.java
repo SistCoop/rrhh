@@ -9,7 +9,7 @@ import org.sistcoop.rrhh.provider.Provider;
 @Local
 public interface AgenciaProvider extends Provider {
 
-	AgenciaModel addAgencia(SucursalModel sucursal, String denominacion, String ubigeo, String direccion);
+	AgenciaModel addAgencia(SucursalModel sucursal, String denominacion);
 
 	boolean removeAgencia(AgenciaModel agenciaModel);
 

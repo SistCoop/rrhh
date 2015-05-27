@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -59,7 +60,7 @@ public class SucursalEntity implements Serializable {
 		this.denominacion = denominacion;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "sucursal")
+	@OneToMany(fetch = FetchType.LAZY, cascade= CascadeType.REMOVE, mappedBy = "sucursal")
 	public Set<AgenciaEntity> getAgencias() {
 		return agencias;
 	}

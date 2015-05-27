@@ -21,13 +21,13 @@ import javax.ws.rs.core.Response;
 import org.hibernate.validator.constraints.NotBlank;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
 @Path("/sucursales/{sucursal}/agencias")
 public interface AgenciaResource {
 	
 	@GET
 	@Path("/{agencia}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public AgenciaRepresentation getAgenciaById(
 			@PathParam("sucursal") 
 			@NotNull
@@ -71,6 +71,8 @@ public interface AgenciaResource {
 	
 	@PUT
 	@Path("/{agencia}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public void updateAgencia(
 			@PathParam("sucursal") 
 			@NotNull

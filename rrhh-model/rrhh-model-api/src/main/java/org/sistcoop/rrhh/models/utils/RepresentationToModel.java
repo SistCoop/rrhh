@@ -24,7 +24,10 @@ public class RepresentationToModel {
 	}
 
 	public AgenciaModel createAgencia(SucursalModel sucursalModel, AgenciaRepresentation rep, AgenciaProvider agenciaProvider) {
-		AgenciaModel agenciaModel = agenciaProvider.addAgencia(sucursalModel, rep.getDenominacion(), rep.getUbigeo(), rep.getDireccion());
+		AgenciaModel agenciaModel = agenciaProvider.addAgencia(sucursalModel, rep.getDenominacion());
+		agenciaModel.setDireccion(rep.getDireccion());
+		agenciaModel.setUbigeo(rep.getUbigeo());
+		agenciaModel.commit();
 		return agenciaModel;
 	}
 	

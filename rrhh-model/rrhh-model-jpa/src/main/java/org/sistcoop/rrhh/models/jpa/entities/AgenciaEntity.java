@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -71,9 +72,7 @@ public class AgenciaEntity implements Serializable {
 		this.denominacion = denominacion;
 	}
 	
-	@NotNull
 	@Size(min = 1, max = 150)
-	@NotBlank
 	@Column(name = "DIRECCION")
 	public String getDireccion() {
 		return direccion;
@@ -83,9 +82,7 @@ public class AgenciaEntity implements Serializable {
 		this.direccion = direccion;
 	}
 
-	@NotNull
 	@Size(min = 6, max = 6)
-	@NotBlank
 	@Column(name = "UBIGEO")
 	public String getUbigeo() {
 		return ubigeo;
@@ -107,7 +104,7 @@ public class AgenciaEntity implements Serializable {
 		this.sucursal = sucursal;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "agencia")
+	@OneToMany(fetch = FetchType.LAZY, cascade= CascadeType.REMOVE, mappedBy = "agencia")
 	public Set<TrabajadorEntity> getTrabajadores() {
 		return trabajadores;
 	}
