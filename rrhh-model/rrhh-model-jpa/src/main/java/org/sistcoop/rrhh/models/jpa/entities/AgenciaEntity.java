@@ -72,7 +72,7 @@ public class AgenciaEntity implements Serializable {
 		this.denominacion = denominacion;
 	}
 	
-	@Size(min = 1, max = 150)
+	@Size(min = 0, max = 150)
 	@Column(name = "DIRECCION")
 	public String getDireccion() {
 		return direccion;

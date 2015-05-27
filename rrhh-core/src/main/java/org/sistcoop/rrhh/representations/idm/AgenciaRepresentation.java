@@ -38,7 +38,7 @@ public class AgenciaRepresentation implements Serializable {
 		this.denominacion = denominacion;
 	}
 
-	@Size(min = 1, max = 150)
+	@Size(min = 0, max = 150)
 	public String getDireccion() {
 		return direccion;
 	}
