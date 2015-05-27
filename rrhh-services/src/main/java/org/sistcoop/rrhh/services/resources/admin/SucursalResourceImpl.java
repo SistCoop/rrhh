@@ -7,7 +7,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.ejb3.annotation.SecurityDomain;
@@ -63,9 +62,9 @@ public class SucursalResourceImpl implements SucursalResource {
 
 	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
-	public Response create(SucursalRepresentation rep) {		
-		SucursalModel model = representationToModel.createSucursal(rep, sucursalProvider);
-		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getDenominacion()).build();
+	public void create(SucursalRepresentation rep) {		
+		representationToModel.createSucursal(rep, sucursalProvider);
+		//return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").entity(model.getDenominacion()).build();
 	}
 
 	@RolesAllowed(Roles.administrar_sucursales)
@@ -76,7 +75,7 @@ public class SucursalResourceImpl implements SucursalResource {
 		model.commit();	
 	}
 
-	@RolesAllowed(Roles.eliminar_sucursales)
+	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
 	public void delete(String sucursal) {
 		SucursalModel model = sucursalProvider.getSucursalByDenominacion(sucursal);

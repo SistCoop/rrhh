@@ -1,5 +1,6 @@
 package org.sistcoop.rrhh.models.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -71,10 +72,23 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 	}
 
 	@Override
-	public List<AgenciaModel> getAgencias(SucursalModel sucursal,
-			String filterText, int firstResult, int maxResults) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<AgenciaModel> getAgencias(SucursalModel sucursal, String filterText, int firstResult, int maxResults) {						
+		TypedQuery<AgenciaEntity> query = em.createQuery("SELECT a FROM AgenciaEntity a WHERE a.sucursal.denominacion=:sucursal AND a.denominacion LIKE :filterText", AgenciaEntity.class);	
+		query.setParameter("sucursal", sucursal.getDenominacion());
+		query.setParameter("filterText", "%" + filterText + "%");
+		if (firstResult != -1) {
+			query.setFirstResult(firstResult);
+		}
+		if (maxResults != -1) {
+			query.setMaxResults(maxResults);
+		}
+		
+		List<AgenciaEntity> entities = query.getResultList();
+		List<AgenciaModel> result = new ArrayList<>();
+		for (AgenciaEntity agenciaEntity : entities) {
+			result.add(new AgenciaAdapter(em, agenciaEntity));
+		}
+		return result;
 	}
 
 }

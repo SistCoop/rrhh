@@ -49,7 +49,7 @@ public class SucursalEntity implements Serializable {
 	@NotNull
 	@Size(min = 1, max = 60)
 	@NotBlank
-	@NaturalId
+	@NaturalId(mutable = true)
 	@Column(name = "DENOMINACION")
 	public String getDenominacion() {
 		return denominacion;

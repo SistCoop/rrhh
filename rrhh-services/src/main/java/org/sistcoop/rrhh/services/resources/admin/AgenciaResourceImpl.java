@@ -51,8 +51,9 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		if(maxResults == null)
 			maxResults = -1;
 		
-		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
-		List<AgenciaModel> agenciaModels = agenciaProvider.getAgencias(sucursalModel, filterText, firstResult, maxResults);
+		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);				
+		
+		List<AgenciaModel> agenciaModels = agenciaProvider.getAgencias(sucursalModel, filterText, firstResult, maxResults);		
 		List<AgenciaRepresentation> result = new ArrayList<AgenciaRepresentation>();
 		for (AgenciaModel agenciaModel : agenciaModels) {
 			result.add(ModelToRepresentation.toRepresentation(agenciaModel));
