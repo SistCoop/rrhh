@@ -32,6 +32,8 @@ public interface TrabajadorResource {
 			@NotNull 
 			@Min(value = 1) Integer idTrabajador);
 
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/buscar")
 	public TrabajadorRepresentation findByTipoNumeroDocumento(

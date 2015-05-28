@@ -20,6 +20,7 @@ import org.sistcoop.rrhh.models.SucursalProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.models.utils.RepresentationToModel;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
+import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Stateless
 @SecurityDomain("keycloak")
@@ -93,6 +94,38 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
 		AgenciaModel agenciaModel = agenciaProvider.getAgenciaByDenominacion(sucursalModel, agencia);		
 		agenciaProvider.removeAgencia(agenciaModel);
+	}
+
+	
+	/**
+	 * TRABAJADORES*/
+	@Override
+	public List<TrabajadorRepresentation> getTrabajadores(String sucursal,
+			String agencia, String filterText, Integer firstResult,
+			Integer maxResults) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response addTrabajador(String sucursal, String agencia,
+			TrabajadorRepresentation trabajadorRepresentation) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateTrabajador(String sucursal, String agencia,
+			AgenciaRepresentation agenciaRepresentation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeTrabajador(String sucursal, String agencia,
+			Integer idTrabajador) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
