@@ -17,6 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
@@ -74,6 +75,13 @@ public interface TrabajadorResource {
 			
 			@QueryParam("maxResults") 
 			@Min(value = 1) Integer maxResults);
+	
+	@POST		
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addTrabajador(			
+			@NotNull
+			@Valid TrabajadorRepresentation trabajadorRepresentation);
 	
 	@PUT
 	@Path("/{id}")

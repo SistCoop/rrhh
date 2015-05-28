@@ -6,5 +6,6 @@ public class Roles {
 	
 	public final static String ver_trabajadores = "ver-trabajadores";
 	public final static String administrar_trabajadores = "administrar-trabajadores";
+	public final static String administrar_trabajadores_agencia = "administrar-trabajadores-agencia";
 
 }
