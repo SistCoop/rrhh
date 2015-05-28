@@ -38,7 +38,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 	@Context
 	protected UriInfo uriInfo;
 	
-	@RolesAllowed(Roles.ver_agencias)
+	@RolesAllowed(Roles.ver_sucursales)
 	@Override
 	public AgenciaRepresentation getAgenciaById(String sucursal, String agencia) {
 		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);		
@@ -46,7 +46,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		return ModelToRepresentation.toRepresentation(agenciaModel);
 	}
 
-	@RolesAllowed(Roles.ver_agencias)
+	@RolesAllowed(Roles.ver_sucursales)
 	@Override
 	public List<AgenciaRepresentation> getAgencias(String sucursal, String filterText, Integer firstResult, Integer maxResults) {	
 		if(filterText == null)
@@ -66,7 +66,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		return result;
 	}
 
-	@RolesAllowed(Roles.administrar_agencias)
+	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
 	public Response addAgencia(String sucursal, AgenciaRepresentation agenciaRepresentation) {
 		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);		
@@ -75,7 +75,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		return Response.created(uriInfo.getAbsolutePathBuilder().path(model.getDenominacion()).build()).header("Access-Control-Expose-Headers", "Location").build();
 	}
 	
-	@RolesAllowed(Roles.administrar_agencias)
+	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
 	public void updateAgencia(String sucursal, String agencia, AgenciaRepresentation agenciaRepresentation) {
 		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
@@ -88,7 +88,7 @@ public class AgenciaResourceImpl implements AgenciaResource {
 		
 	}
 
-	@RolesAllowed(Roles.administrar_agencias)
+	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
 	public void remove(String sucursal, String agencia) {
 		SucursalModel sucursalModel = sucursalProvider.getSucursalByDenominacion(sucursal);
