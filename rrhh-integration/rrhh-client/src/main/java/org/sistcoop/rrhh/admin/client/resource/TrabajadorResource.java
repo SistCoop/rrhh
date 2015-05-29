@@ -31,16 +31,16 @@ public interface TrabajadorResource {
 	public TrabajadorRepresentation findById(
 			@PathParam("id") 
 			@NotNull 
-			@Min(value = 1) String id);
+			@Size(min = 1) String id);
 
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
+	@Path("/buscar")
 	public TrabajadorRepresentation findByTipoNumeroDocumento(
 			@QueryParam("tipoDocumento") 
 			@NotNull 
-			@Size(min = 1, max = 20) 
-			String tipoDocumento, 
+			@Size(min = 1, max = 20) String tipoDocumento, 
 			
 			@QueryParam("numeroDocumento")
 			@NotNull 
@@ -81,7 +81,7 @@ public interface TrabajadorResource {
 	public void update(			
 			@PathParam("id") 
 			@NotNull 
-			@Min(value = 1) String id, 
+			@Size(min = 1) String id, 
 			
 			@NotNull
 			@Valid TrabajadorRepresentation rep);
@@ -91,6 +91,6 @@ public interface TrabajadorResource {
 	public void remove(
 			@PathParam("id") 
 			@NotNull 
-			@Min(value = 1) String id);
+			@Size(min = 1) String id);
 	
 }

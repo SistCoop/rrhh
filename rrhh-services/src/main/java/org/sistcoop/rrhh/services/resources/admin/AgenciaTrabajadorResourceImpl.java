@@ -7,11 +7,16 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.ejb3.annotation.SecurityDomain;
+import org.jboss.resteasy.spi.HttpRequest;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.representations.AccessToken;
 import org.sistcoop.rrhh.admin.client.Roles;
 import org.sistcoop.rrhh.admin.client.resource.AgenciaTrabajadorResource;
 import org.sistcoop.rrhh.models.AgenciaModel;
@@ -20,19 +25,17 @@ import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.SucursalProvider;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.models.utils.RepresentationToModel;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
-import org.sistcoop.rrhh.services.util.KeycloakSession;
 
 @Stateless
 @SecurityDomain("keycloak")
 public class AgenciaTrabajadorResourceImpl implements AgenciaTrabajadorResource {
-
-	@Inject
-	private KeycloakSession keycloakSession;
 	
 	@Inject
 	private SucursalProvider sucursalProvider;
@@ -93,7 +96,7 @@ public class AgenciaTrabajadorResourceImpl implements AgenciaTrabajadorResource 
 		}
 		
 		//validar permisos
-		keycloakSession.validarAdministrarTrabajadoresPorAgencia(agenciaModel);
+		this.validarAdministrarTrabajadoresPorAgencia(agenciaModel);
 		
 		//Agencia y sucursal enviada por el usuario
         AgenciaRepresentation agenciaRepresentation = trabajadorRepresentation.getAgencia();
@@ -115,9 +118,37 @@ public class AgenciaTrabajadorResourceImpl implements AgenciaTrabajadorResource 
 		}
 		
 		//validar permisos
-		keycloakSession.validarAdministrarTrabajadoresPorAgencia(agenciaModel);
+		this.validarAdministrarTrabajadoresPorAgencia(agenciaModel);
 				
 		trabajadorProvider.removeTrabajador(trabajadorModel);
 	}
 
+	@Context
+    private HttpRequest httpRequest;	
+	@Context 
+	private SecurityContext securityContext;	
+	@Inject
+	private TrabajadorUsuarioProvider trabajadorUsuarioProvider;
+	
+	private void validarAdministrarTrabajadoresPorAgencia(AgenciaModel agenciaModel){		
+		//keycloak username
+        KeycloakSecurityContext securityContextKeycloak = (KeycloakSecurityContext) httpRequest.getAttribute(KeycloakSecurityContext.class.getName());                
+        AccessToken accessToken = securityContextKeycloak.getToken();             
+        
+		if(securityContext.isUserInRole(Roles.administrar_trabajadores)){			
+        	//crear trababajador
+        } else if(securityContext.isUserInRole(Roles.administrar_trabajadores_agencia)){        	
+        	//verificar que el usuario tenga la agencia y sucursal correcta
+        	String username = accessToken.getPreferredUsername();
+        	TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorUsuarioProvider.getTrabajadorUsuarioByUsuario(username);
+        	TrabajadorModel trabajadorModel = trabajadorUsuarioModel.getTrabajador();
+        	AgenciaModel agenciaDelUsuarioModel = trabajadorModel.getAgencia();        	
+        	if(!agenciaDelUsuarioModel.equals(agenciaModel)) {
+        		throw new InternalServerErrorException("El usuario no puede crear trabajadores en esta agencia");
+        	}
+        } else {        	        	
+        	throw new InternalServerErrorException();
+        }   
+	}
+	
 }

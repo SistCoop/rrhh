@@ -77,7 +77,7 @@ public interface AgenciaTrabajadorResource {
 	@DELETE
 	@Path("/{idTrabajador}")
 	public void removeTrabajador(			
-			@PathParam("idAgencia") 
+			@PathParam("idAgencia")
 			@NotNull
 			@Size(min = 1, max = 60)
 			@NotBlank String idAgencia,
