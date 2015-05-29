@@ -139,6 +139,33 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
         
 		trabajadorProvider.removeTrabajador(trabajadorModel);
 	}
+
+	@RolesAllowed(Roles.ver_trabajadores)
+	@Override
+	public String getUsuario(String id) {
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
+		TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorModel.getTrabajadorUsuarioModel();
+		if(trabajadorUsuarioModel != null) {
+			return trabajadorUsuarioModel.getUsuario();
+		} else {
+			return null;
+		}
+	}
+	
+	@RolesAllowed({ Roles.administrar_trabajadores, Roles.administrar_trabajadores_agencia })
+	@Override
+	public void setUsuario(String id, String usuario) {
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
+		trabajadorUsuarioProvider.addTrabajadorUsuario(trabajadorModel, usuario);		
+	}
+
+	@RolesAllowed(Roles.ver_trabajadores)
+	@Override
+	public AgenciaRepresentation getAgencia(String id) {
+		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
+		AgenciaModel agenciaModel = trabajadorModel.getAgencia();
+		return ModelToRepresentation.toRepresentation(agenciaModel);
+	}
 	
 	@Context
     private HttpRequest httpRequest;	
@@ -167,4 +194,5 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
         	throw new InternalServerErrorException();
         }   
 	}
+	
 }

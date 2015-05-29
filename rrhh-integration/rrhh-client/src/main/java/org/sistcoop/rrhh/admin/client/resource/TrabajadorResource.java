@@ -19,6 +19,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Path("/trabajadores")
@@ -74,7 +75,7 @@ public interface TrabajadorResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(			
 			@NotNull
-			@Valid TrabajadorRepresentation trabajadorRepresentation);
+			@Valid TrabajadorRepresentation trabajadorRepresentation);	
 	
 	@PUT
 	@Path("/{id}")
@@ -89,6 +90,30 @@ public interface TrabajadorResource {
 	@DELETE
 	@Path("/{id}")
 	public void remove(
+			@PathParam("id") 
+			@NotNull 
+			@Size(min = 1) String id);
+	
+	@GET
+	@Path("/{id}/usuario")
+	public String getUsuario(			
+			@PathParam("id") 
+			@NotNull 
+			@Size(min = 1) String id);
+	
+	@POST
+	@Path("/{id}/usuario")
+	public void setUsuario(			
+			@PathParam("id") 
+			@NotNull 
+			@Size(min = 1) String id, 
+			
+			@NotNull 
+			@Size(min = 1) String usuario);
+	
+	@GET
+	@Path("/{id}/agencia")
+	public AgenciaRepresentation getAgencia(			
 			@PathParam("id") 
 			@NotNull 
 			@Size(min = 1) String id);
