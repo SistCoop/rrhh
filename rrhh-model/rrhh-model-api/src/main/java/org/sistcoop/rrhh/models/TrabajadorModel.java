@@ -2,7 +2,7 @@ package org.sistcoop.rrhh.models;
 
 public interface TrabajadorModel extends Model {
 
-	Integer getId();
+	String getId();
 
 	String getTipoDocumento();
 
@@ -11,10 +11,6 @@ public interface TrabajadorModel extends Model {
 	String getNumeroDocumento();
 
 	void setNumeroDocumento(String numeroDocumento);
-
-	boolean getEstado();
-
-	void desactivar();
 
 	AgenciaModel getAgencia();
 

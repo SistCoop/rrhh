@@ -19,35 +19,35 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
+import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 
-@Path("/sucursales")
-public interface SucursalResource {
+@Path("/sucursales/{sucursal}/agencias")
+public interface SucursalAgenciaResource {
 	
 	@GET
-	@Path("/{sucursal}")
+	@Path("/{agencia}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public SucursalRepresentation find(
+	public AgenciaRepresentation getAgenciaByDenominacion(
 			@PathParam("sucursal") 
 			@NotNull
 			@Size(min = 1, max = 60)
-			@NotBlank String sucursal);
-	
-	@GET
-	@Path("/id/{sucursal}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public SucursalRepresentation findById(
-			@QueryParam("id") 
+			@NotBlank String sucursal,
+			
+			@PathParam("agencia") 
 			@NotNull
 			@Size(min = 1, max = 60)
-			@NotBlank String id);	
+			@NotBlank String agencia);	
 	
-	@GET
+	@GET	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<SucursalRepresentation> findAll(
+	public List<AgenciaRepresentation> getAgencias(
+			@PathParam("sucursal") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal, 
+			
 			@QueryParam("filterText")
 			@Size(min = 0, max = 100) String filterText, 
 			
@@ -57,32 +57,47 @@ public interface SucursalResource {
 			@QueryParam("maxResults") 
 			@Min(value = 1) Integer maxResults);
 	
-	@POST
+	@POST	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(
-			@NotNull 
-			@Valid SucursalRepresentation rep);
-
-	@PUT
-	@Path("/{sucursal}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public void update(
+	public Response addAgencia(
 			@PathParam("sucursal") 
 			@NotNull
 			@Size(min = 1, max = 60)
 			@NotBlank String sucursal, 
 			
 			@NotNull
-			@Valid SucursalRepresentation rep);
+			@Valid AgenciaRepresentation agenciaRepresentation);
 	
+	@PUT
+	@Path("/{agencia}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public void updateAgencia(
+			@PathParam("sucursal") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String sucursal,
+			
+			@PathParam("agencia") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String agencia, 
+			
+			@NotNull
+			@Valid AgenciaRepresentation agenciaRepresentation);
+
 	@DELETE
-	@Path("/{sucursal}")
+	@Path("/{agencia}")
 	public void remove(
 			@PathParam("sucursal") 
 			@NotNull
 			@Size(min = 1, max = 60)
-			@NotBlank String sucursal);
-
+			@NotBlank String sucursal,
+			
+			@PathParam("agencia") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String agencia);	
+	
 }

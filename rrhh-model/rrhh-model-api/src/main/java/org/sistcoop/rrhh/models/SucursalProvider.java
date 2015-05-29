@@ -13,6 +13,8 @@ public interface SucursalProvider extends Provider {
 
 	boolean removeSucursal(SucursalModel sucursalModel);
 
+	SucursalModel getSucursalById(String id);
+	
 	SucursalModel getSucursalByDenominacion(String denominacion);
 
 	List<SucursalModel> getSucursales();

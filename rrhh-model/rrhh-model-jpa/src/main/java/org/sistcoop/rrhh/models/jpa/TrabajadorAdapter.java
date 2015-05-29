@@ -35,7 +35,7 @@ public class TrabajadorAdapter implements TrabajadorModel {
 	}
 
 	@Override
-	public Integer getId() {
+	public String getId() {
 		return trabajadorEntity.getId();
 	}
 
@@ -57,16 +57,6 @@ public class TrabajadorAdapter implements TrabajadorModel {
 	@Override
 	public void setNumeroDocumento(String numeroDocumento) {
 		trabajadorEntity.setNumeroDocumento(numeroDocumento);
-	}
-
-	@Override
-	public boolean getEstado() {
-		return trabajadorEntity.isEstado();
-	}
-
-	@Override
-	public void desactivar() {
-		trabajadorEntity.setEstado(false);
 	}
 
 	@Override

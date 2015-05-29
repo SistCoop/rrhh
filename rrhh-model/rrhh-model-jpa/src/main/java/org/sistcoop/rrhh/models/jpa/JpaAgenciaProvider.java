@@ -55,6 +55,12 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 	}
 
 	@Override
+	public AgenciaModel getAgenciaById(String id) {
+		AgenciaEntity agenciaEntity = em.find(AgenciaEntity.class, id);
+		return agenciaEntity != null ? new AgenciaAdapter(em, agenciaEntity) : null;	
+	}
+	
+	@Override
 	public AgenciaModel getAgenciaByDenominacion(SucursalModel sucursal, String denominacion) {
 		SucursalEntity sucursalEntity = SucursalAdapter.toSucursalEntity(sucursal, em);
 		
@@ -69,6 +75,26 @@ public class JpaAgenciaProvider implements AgenciaProvider {
 		}
 	}
 
+	@Override
+	public List<AgenciaModel> getAgencias(String filterText, int firstResult,
+			int maxResults) {
+		TypedQuery<AgenciaEntity> query = em.createQuery("SELECT a FROM AgenciaEntity a WHERE a.denominacion LIKE :filterText", AgenciaEntity.class);			
+		query.setParameter("filterText", "%" + filterText + "%");
+		if (firstResult != -1) {
+			query.setFirstResult(firstResult);
+		}
+		if (maxResults != -1) {
+			query.setMaxResults(maxResults);
+		}
+		
+		List<AgenciaEntity> entities = query.getResultList();
+		List<AgenciaModel> result = new ArrayList<>();
+		for (AgenciaEntity agenciaEntity : entities) {
+			result.add(new AgenciaAdapter(em, agenciaEntity));
+		}
+		return result;
+	}
+	
 	@Override
 	public List<AgenciaModel> getAgencias(SucursalModel sucursal, String filterText, int firstResult, int maxResults) {						
 		TypedQuery<AgenciaEntity> query = em.createQuery("SELECT a FROM AgenciaEntity a WHERE a.sucursal.denominacion=:sucursal AND a.denominacion LIKE :filterText", AgenciaEntity.class);	

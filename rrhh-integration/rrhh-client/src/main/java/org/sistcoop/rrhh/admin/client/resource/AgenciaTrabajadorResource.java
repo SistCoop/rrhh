@@ -19,35 +19,21 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
+import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
-@Path("/sucursales")
-public interface SucursalResource {
+
+@Path("/agencias/{idAgencia}/trabajadores")
+public interface AgenciaTrabajadorResource {
 	
 	@GET
-	@Path("/{sucursal}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public SucursalRepresentation find(
-			@PathParam("sucursal") 
+	public List<TrabajadorRepresentation> getTrabajadores(			
+			@PathParam("idAgencia") 
 			@NotNull
 			@Size(min = 1, max = 60)
-			@NotBlank String sucursal);
-	
-	@GET
-	@Path("/id/{sucursal}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public SucursalRepresentation findById(
-			@QueryParam("id") 
-			@NotNull
-			@Size(min = 1, max = 60)
-			@NotBlank String id);	
-	
-	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<SucursalRepresentation> findAll(
+			@NotBlank String idAgencia,
+			
 			@QueryParam("filterText")
 			@Size(min = 0, max = 100) String filterText, 
 			
@@ -57,32 +43,46 @@ public interface SucursalResource {
 			@QueryParam("maxResults") 
 			@Min(value = 1) Integer maxResults);
 	
-	@POST
+	@POST	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(
-			@NotNull 
-			@Valid SucursalRepresentation rep);
-
-	@PUT
-	@Path("/{sucursal}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public void update(
-			@PathParam("sucursal") 
+	public Response addTrabajador(			
+			@PathParam("idAgencia") 
 			@NotNull
 			@Size(min = 1, max = 60)
-			@NotBlank String sucursal, 
+			@NotBlank String idAgencia,
 			
 			@NotNull
-			@Valid SucursalRepresentation rep);
+			@Valid TrabajadorRepresentation trabajadorRepresentation);
 	
-	@DELETE
-	@Path("/{sucursal}")
-	public void remove(
-			@PathParam("sucursal") 
+	@PUT
+	@Path("/{idTrabajador}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public void updateTrabajador(			
+			@PathParam("idAgencia") 
 			@NotNull
 			@Size(min = 1, max = 60)
-			@NotBlank String sucursal);
+			@NotBlank String idAgencia,
+			
+			@PathParam("idTrabajador") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String idTrabajador,
+			
+			@NotNull
+			@Valid TrabajadorRepresentation trabajadorRepresentation);
 
+	
+	@DELETE
+	@Path("/{idTrabajador}")
+	public void removeTrabajador(			
+			@PathParam("idAgencia") 
+			@NotNull
+			@Size(min = 1, max = 60)
+			@NotBlank String idAgencia,
+			
+			@PathParam("idTrabajador") 
+			@NotNull String idTrabajador);
+	
 }

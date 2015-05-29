@@ -31,19 +31,12 @@ public interface TrabajadorResource {
 	public TrabajadorRepresentation findById(
 			@PathParam("id") 
 			@NotNull 
-			@Min(value = 1) Integer idTrabajador);
+			@Min(value = 1) String id);
 
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
-	@Path("/buscar")
 	public TrabajadorRepresentation findByTipoNumeroDocumento(
-			@QueryParam("sucursal") 		
-			@Size(min = 1, max = 60) String sucursal,
-			
-			@QueryParam("agencia") 		
-			@Size(min = 1, max = 60) String agencia, 
-			
 			@QueryParam("tipoDocumento") 
 			@NotNull 
 			@Size(min = 1, max = 20) 
@@ -57,7 +50,7 @@ public interface TrabajadorResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET	
-	public List<TrabajadorRepresentation> getTrabajadores(
+	public List<TrabajadorRepresentation> findAll(
 			
 			@QueryParam("sucursal") 		
 			@Size(min = 1, max = 60) String sucursal,
@@ -79,7 +72,7 @@ public interface TrabajadorResource {
 	@POST		
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addTrabajador(			
+	public Response create(			
 			@NotNull
 			@Valid TrabajadorRepresentation trabajadorRepresentation);
 	
@@ -88,23 +81,16 @@ public interface TrabajadorResource {
 	public void update(			
 			@PathParam("id") 
 			@NotNull 
-			@Min(value = 1) Integer idTrabajador, 
+			@Min(value = 1) String id, 
 			
 			@NotNull
 			@Valid TrabajadorRepresentation rep);
-
+	
 	@DELETE
 	@Path("/{id}")
-	public void delete(
+	public void remove(
 			@PathParam("id") 
 			@NotNull 
-			@Min(value = 1) Integer idTrabajador);
-
-	@POST
-	@Path("/{id}/desactivar")
-	public void desactivar(
-			@PathParam("id")
-			@NotNull 
-			@Min(value = 1) Integer idTrabajador);
+			@Min(value = 1) String id);
 	
 }

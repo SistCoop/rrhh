@@ -3,7 +3,6 @@ package org.sistcoop.rrhh.representations.idm;
 import java.io.Serializable;
 
 import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -14,7 +13,7 @@ public class TrabajadorRepresentation implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private String id;
 	private String tipoDocumento;
 	private String numeroDocumento;
 	private Boolean estado;
@@ -25,12 +24,12 @@ public class TrabajadorRepresentation implements Serializable {
 	private AreaRepresentation area;
 	private CargoRepresentation cargo;
 
-	@Min(value = 1)
-	public Integer getId() {
+	@Size(min = 1)
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

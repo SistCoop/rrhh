@@ -1,5 +1,6 @@
 package org.sistcoop.rrhh.models.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -39,8 +40,7 @@ public class JpaTrabajadorProvider implements TrabajadorProvider {
 		trabajadorEntity.setAgencia(agenciaEntity);
 
 		trabajadorEntity.setTipoDocumento(tipoDocumento);
-		trabajadorEntity.setNumeroDocumento(numeroDocumento);
-		trabajadorEntity.setEstado(true);
+		trabajadorEntity.setNumeroDocumento(numeroDocumento);		
 
 		em.persist(trabajadorEntity);
 		return new TrabajadorAdapter(em, trabajadorEntity);
@@ -57,20 +57,62 @@ public class JpaTrabajadorProvider implements TrabajadorProvider {
 	}
 
 	@Override
-	public TrabajadorModel getTrabajadorById(Integer id) {
+	public TrabajadorModel getTrabajadorById(String id) {
 		TrabajadorEntity trabajadorEntity = this.em.find(TrabajadorEntity.class, id);
 		return trabajadorEntity != null ? new TrabajadorAdapter(em, trabajadorEntity) : null;
 	}
 
 	@Override
 	public TrabajadorModel getTrabajadorByTipoNumeroDocumento(String tipoDocumento, String numeroDocumento) {
-		TypedQuery<TrabajadorEntity> query = em.createNamedQuery(TrabajadorEntity.findByTipoAndNumeroDocumento, TrabajadorEntity.class);
+		TypedQuery<TrabajadorEntity> query = em.createQuery("SELECT t FROM TrabajadorEntity t WHERE t.tipoDocumento = :tipoDocumento AND t.numeroDocumento = :numeroDocumento", TrabajadorEntity.class);
 		query.setParameter("tipoDocumento", tipoDocumento);
 		query.setParameter("numeroDocumento", numeroDocumento);
 		List<TrabajadorEntity> results = query.getResultList();
 		if (results.size() == 0)
 			return null;
 		return new TrabajadorAdapter(em, results.get(0));
+	}
+
+	@Override
+	public List<TrabajadorModel> getTrabajadores(String filterText,
+			int firstResult, int maxResults) {
+		TypedQuery<TrabajadorEntity> query = em.createQuery("SELECT a FROM TrabajadorEntity a WHERE a.numeroDocumento LIKE :filterText", TrabajadorEntity.class);			
+		query.setParameter("filterText", "%" + filterText + "%");
+		if (firstResult != -1) {
+			query.setFirstResult(firstResult);
+		}
+		if (maxResults != -1) {
+			query.setMaxResults(maxResults);
+		}
+		
+		List<TrabajadorEntity> entities = query.getResultList();
+		List<TrabajadorModel> result = new ArrayList<>();
+		for (TrabajadorEntity trabajadorEntity : entities) {
+			result.add(new TrabajadorAdapter(em, trabajadorEntity));
+		}
+		return result;
+	}
+
+	@Override
+	public List<TrabajadorModel> getTrabajadores(AgenciaModel agencia,
+			String filterText, int firstResult, int maxResults) {
+		TypedQuery<TrabajadorEntity> query = em.createQuery("SELECT a FROM TrabajadorEntity a WHERE a.agencia.denominacion = :agencia AND a.agencia.sucursal.denominacion = :sucursal AND a.numeroDocumento LIKE :filterText", TrabajadorEntity.class);			
+		query.setParameter("sucursal", agencia.getSucursal().getDenominacion());
+		query.setParameter("agencia", agencia.getDenominacion());
+		query.setParameter("filterText", "%" + filterText + "%");
+		if (firstResult != -1) {
+			query.setFirstResult(firstResult);
+		}
+		if (maxResults != -1) {
+			query.setMaxResults(maxResults);
+		}
+		
+		List<TrabajadorEntity> entities = query.getResultList();
+		List<TrabajadorModel> result = new ArrayList<>();
+		for (TrabajadorEntity trabajadorEntity : entities) {
+			result.add(new TrabajadorAdapter(em, trabajadorEntity));
+		}
+		return result;
 	}
 
 }

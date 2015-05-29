@@ -34,8 +34,16 @@ public class SucursalResourceImpl implements SucursalResource {
 
 	@RolesAllowed(Roles.ver_sucursales)
 	@Override
-	public SucursalRepresentation findById(String sucursal) {
+	public SucursalRepresentation find(String sucursal) {
 		SucursalModel model = sucursalProvider.getSucursalByDenominacion(sucursal);
+		SucursalRepresentation rep = ModelToRepresentation.toRepresentation(model);
+		return rep;
+	}
+	
+	@RolesAllowed(Roles.ver_sucursales)
+	@Override
+	public SucursalRepresentation findById(String id) {
+		SucursalModel model = sucursalProvider.getSucursalById(id);
 		SucursalRepresentation rep = ModelToRepresentation.toRepresentation(model);
 		return rep;
 	}
@@ -78,7 +86,7 @@ public class SucursalResourceImpl implements SucursalResource {
 
 	@RolesAllowed(Roles.administrar_sucursales)
 	@Override
-	public void delete(String sucursal) {
+	public void remove(String sucursal) {
 		SucursalModel model = sucursalProvider.getSucursalByDenominacion(sucursal);
 		sucursalProvider.removeSucursal(model);
 	}

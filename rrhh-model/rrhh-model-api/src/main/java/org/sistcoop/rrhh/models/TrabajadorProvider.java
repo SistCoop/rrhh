@@ -1,5 +1,7 @@
 package org.sistcoop.rrhh.models;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import org.sistcoop.rrhh.provider.Provider;
@@ -14,8 +16,12 @@ public interface TrabajadorProvider extends Provider {
 
 	boolean removeTrabajador(TrabajadorModel trabajadorModel);	
 
-	TrabajadorModel getTrabajadorById(Integer id);
+	TrabajadorModel getTrabajadorById(String id);
 
 	TrabajadorModel getTrabajadorByTipoNumeroDocumento(String tipoDocumento, String numeroDocumento);
+	
+	List<TrabajadorModel> getTrabajadores(String filterText, int firstResult, int maxResults);
+	
+	List<TrabajadorModel> getTrabajadores(AgenciaModel agencia, String filterText, int firstResult, int maxResults);
 
 }

@@ -15,22 +15,16 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "TRABAJADOR_USUARIO")
-@NamedQueries(value = {
-		@NamedQuery(name = TrabajadorUsuarioEntity.findByUsuario, query = "SELECT t FROM TrabajadorUsuarioEntity t WHERE t.usuario = :usuario ") })
 public class TrabajadorUsuarioEntity implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public final static String base = "org.softgreen.sistcoop.organizacion.ejb.models.jpa.entities.TrabajadorUsuarioEntity.";
-	public final static String findByUsuario = base + "findByUsuario";
 
 	private Integer id;
 	private String usuario;

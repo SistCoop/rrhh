@@ -42,7 +42,7 @@ public class AgenciaAdapter implements AgenciaModel {
 	}
 
 	@Override
-	public Integer getId() {
+	public String getId() {
 		return agenciaEntity.getId();
 	}
 
@@ -86,8 +86,7 @@ public class AgenciaAdapter implements AgenciaModel {
 		Set<TrabajadorEntity> list = agenciaEntity.getTrabajadores();
 		List<TrabajadorModel> result = new ArrayList<TrabajadorModel>();
 		for (TrabajadorEntity entity : list) {
-			if (entity.isEstado() == true)
-				result.add(new TrabajadorAdapter(em, entity));
+			result.add(new TrabajadorAdapter(em, entity));	
 		}
 		return result;
 	}

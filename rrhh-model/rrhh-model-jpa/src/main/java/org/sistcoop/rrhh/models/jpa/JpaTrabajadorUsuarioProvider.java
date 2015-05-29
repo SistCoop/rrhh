@@ -70,7 +70,7 @@ public class JpaTrabajadorUsuarioProvider implements TrabajadorUsuarioProvider {
 	@Override
 	public TrabajadorUsuarioModel getTrabajadorUsuarioByUsuario(String usuario) {
 
-		TypedQuery<TrabajadorUsuarioEntity> query = em.createNamedQuery(TrabajadorUsuarioEntity.findByUsuario, TrabajadorUsuarioEntity.class);
+		TypedQuery<TrabajadorUsuarioEntity> query = em.createQuery("SELECT t FROM TrabajadorUsuarioEntity t WHERE t.usuario = :usuario", TrabajadorUsuarioEntity.class);
 		query.setParameter("usuario", usuario);
 		List<TrabajadorUsuarioEntity> list = query.getResultList();
 		if (list.size() > 0) {

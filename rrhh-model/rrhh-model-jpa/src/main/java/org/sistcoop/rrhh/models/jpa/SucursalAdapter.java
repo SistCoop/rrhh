@@ -41,7 +41,7 @@ public class SucursalAdapter implements SucursalModel {
 	}
 
 	@Override
-	public Integer getId() {
+	public String getId() {
 		return sucursalEntity.getId();
 	}
 

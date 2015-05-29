@@ -18,31 +18,22 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
-import org.hibernate.annotations.Type;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "TRABAJADOR")
-@NamedQueries(value = {		
-		@NamedQuery(name = TrabajadorEntity.findByTipoAndNumeroDocumento, query = "SELECT t FROM TrabajadorEntity t WHERE t.tipoDocumento = :tipoDocumento AND t.numeroDocumento = :numeroDocumento AND t.estado = TRUE"),
-		@NamedQuery(name = TrabajadorEntity.findByAgenciaAndFilterText, query = "SELECT t FROM TrabajadorEntity t WHERE t.agencia.id = :idAgencia AND ( t.numeroDocumento LIKE :filterText ) AND t.estado = TRUE") })
 public class TrabajadorEntity implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public final static String base = "org.softgreen.sistcoop.organizacion.ejb.models.jpa.entities.TrabajadorEntity.";	
-	public final static String findByTipoAndNumeroDocumento = base + "findByTipoAndNumeroDocumento";
-	public final static String findByAgenciaAndFilterText = base + "findByAgenciaAndFilterText";
 	
-	private Integer id;
+	private String id;
 	private String tipoDocumento;
-	private String numeroDocumento;
-	private boolean estado;
+	private String numeroDocumento;	
 	private AgenciaEntity agencia;
 	private AreaEntity area;
 	private CargoEntity cargo;
@@ -52,12 +43,13 @@ public class TrabajadorEntity implements Serializable{
 	private Timestamp optlk;	
 
 	@Id
-	@GeneratedValue(generator = "SgGenericGenerator")
-	public Integer getId() {
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -83,16 +75,6 @@ public class TrabajadorEntity implements Serializable{
 
 	public void setNumeroDocumento(String numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
-	}
-
-	@NotNull
-	@Type(type = "org.hibernate.type.TrueFalseType")
-	public boolean isEstado() {
-		return estado;
-	}
-
-	public void setEstado(boolean estado) {
-		this.estado = estado;
 	}
 
 	@NotNull
