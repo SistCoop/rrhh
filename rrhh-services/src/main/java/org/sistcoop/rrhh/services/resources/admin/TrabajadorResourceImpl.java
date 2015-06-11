@@ -154,12 +154,18 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 	
 	@RolesAllowed({ Roles.administrar_trabajadores, Roles.administrar_trabajadores_agencia })
 	@Override
-	public void setUsuario(String id, String usuario) {		
+	public void setUsuario(String id, TrabajadorRepresentation trabajadorRepresentation) {		
 		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorById(id);
 		TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorModel.getTrabajadorUsuarioModel();
+		
+		String usuario = trabajadorRepresentation.getUsuario();
 		if(trabajadorUsuarioModel != null) {
-			trabajadorUsuarioModel.setUsuario(usuario);
-			trabajadorUsuarioModel.commit();
+			if(usuario != null) {
+				trabajadorUsuarioModel.setUsuario(usuario);
+				trabajadorUsuarioModel.commit();
+			} else {
+				trabajadorUsuarioProvider.removeTrabajadorUsuario(trabajadorUsuarioModel);
+			} 			
 		} else {
 			trabajadorUsuarioProvider.addTrabajadorUsuario(trabajadorModel, usuario);	
 		}			
