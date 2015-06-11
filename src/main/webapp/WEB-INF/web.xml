@@ -20,12 +20,6 @@
 		<role-name>administrar-sucursales</role-name>
 	</security-role>
 	<security-role>
-		<role-name>ver-agencias</role-name>
-	</security-role>
-	<security-role>
-		<role-name>administrar-agencias</role-name>
-	</security-role>
-	<security-role>
 		<role-name>ver-trabajadores</role-name>
 	</security-role>
 	<security-role>
@@ -48,23 +42,7 @@
 		<auth-constraint>
 			<role-name>administrar-sucursales</role-name>
 		</auth-constraint>
-	</security-constraint>
-	<security-constraint>
-		<web-resource-collection>
-			<url-pattern>/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>ver-agencias</role-name>
-		</auth-constraint>
-	</security-constraint>
-	<security-constraint>
-		<web-resource-collection>
-			<url-pattern>/*</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-			<role-name>administrar-agencias</role-name>
-		</auth-constraint>
-	</security-constraint>
+	</security-constraint>	
 	<security-constraint>
 		<web-resource-collection>
 			<url-pattern>/*</url-pattern>
