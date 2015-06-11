@@ -107,8 +107,7 @@ public interface TrabajadorResource {
 			@PathParam("id") 
 			@NotNull 
 			@Size(min = 1) String id, 
-			
-			@NotNull 
+						
 			@Size(min = 1) String usuario);
 	
 	@GET
