@@ -35,7 +35,7 @@ public class TrabajadorUsuarioAdapter implements TrabajadorUsuarioModel {
 	}
 
 	@Override
-	public Integer getId() {
+	public String getId() {
 		return trabajadorUsuarioEntity.getId();
 	}
 

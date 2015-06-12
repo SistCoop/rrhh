@@ -41,6 +41,9 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 	private TrabajadorProvider trabajadorProvider;
 	
 	@Inject
+	private TrabajadorUsuarioProvider trabajadorUsuarioProvider;
+	
+	@Inject
 	private SucursalProvider sucursalProvider;
 	
 	@Inject
@@ -194,8 +197,6 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
     private HttpRequest httpRequest;	
 	@Context 
 	private SecurityContext securityContext;	
-	@Inject
-	private TrabajadorUsuarioProvider trabajadorUsuarioProvider;
 	
 	private void validarAdministrarTrabajadoresPorAgencia(AgenciaModel agenciaModel){		
 		//keycloak username

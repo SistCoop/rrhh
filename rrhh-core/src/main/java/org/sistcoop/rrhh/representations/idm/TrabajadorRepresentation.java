@@ -2,7 +2,6 @@ package org.sistcoop.rrhh.representations.idm;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -15,8 +14,7 @@ public class TrabajadorRepresentation implements Serializable {
 
 	private String id;
 	private String tipoDocumento;
-	private String numeroDocumento;
-	private Boolean estado;
+	private String numeroDocumento;	
 
 	private String usuario;
 
@@ -49,15 +47,6 @@ public class TrabajadorRepresentation implements Serializable {
 
 	public void setNumeroDocumento(String numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
-	}
-
-	@AssertTrue
-	public Boolean isEstado() {
-		return estado;
-	}
-
-	public void setEstado(Boolean estado) {
-		this.estado = estado;
 	}
 
 	@Size(min = 1, max = 60)

@@ -15,6 +15,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
@@ -26,19 +27,20 @@ public class TrabajadorUsuarioEntity implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Integer id;
+	private String id;
 	private String usuario;
 	private TrabajadorEntity trabajador;
 
 	private Timestamp optlk;
 
 	@Id
-	@GeneratedValue(generator = "SgGenericGenerator")
-	public Integer getId() {
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
