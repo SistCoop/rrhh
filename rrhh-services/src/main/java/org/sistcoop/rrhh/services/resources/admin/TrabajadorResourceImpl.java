@@ -61,9 +61,20 @@ public class TrabajadorResourceImpl implements TrabajadorResource {
 
 	@RolesAllowed(Roles.ver_trabajadores)
 	@Override
-	public TrabajadorRepresentation findByTipoNumeroDocumento(String tipoDocumento, String numeroDocumento) {				
-		TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorByTipoNumeroDocumento(tipoDocumento, numeroDocumento);
-		return ModelToRepresentation.toRepresentation(trabajadorModel);			
+	public TrabajadorRepresentation findByAtributos(String tipoDocumento, String numeroDocumento, String usuario) {		
+		if(tipoDocumento != null && numeroDocumento != null) {
+			TrabajadorModel trabajadorModel = trabajadorProvider.getTrabajadorByTipoNumeroDocumento(tipoDocumento, numeroDocumento);
+			return ModelToRepresentation.toRepresentation(trabajadorModel);
+		} else if(usuario != null) {
+			TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorUsuarioProvider.getTrabajadorUsuarioByUsuario(usuario);
+			if(trabajadorUsuarioModel != null) {
+				return ModelToRepresentation.toRepresentation(trabajadorUsuarioModel.getTrabajador());
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}					
 	}
 
 	@Override

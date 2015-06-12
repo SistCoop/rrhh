@@ -38,16 +38,17 @@ public interface TrabajadorResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET
 	@Path("/buscar")
-	public TrabajadorRepresentation findByTipoNumeroDocumento(
-			@QueryParam("tipoDocumento") 
-			@NotNull 
+	public TrabajadorRepresentation findByAtributos(
+			@QueryParam("tipoDocumento") 			
 			@Size(min = 1, max = 20) String tipoDocumento, 
 			
-			@QueryParam("numeroDocumento")
-			@NotNull 
+			@QueryParam("numeroDocumento")			
 			@Pattern(regexp = "[0-9]+")
-			@Size(min = 1, max = 20) String numeroDocumento);
-
+			@Size(min = 1, max = 20) String numeroDocumento,
+			
+			@QueryParam("usuario")			
+			@Size(min = 1, max = 60) String usuario);
+	
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@GET	
