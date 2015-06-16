@@ -25,10 +25,11 @@ import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 public interface AgenciaResource {
 	
 	@GET
+	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public AgenciaRepresentation findById(			
-			@QueryParam("id") 
+			@PathParam("id") 
 			@NotNull
 			@Size(min = 1, max = 60)
 			@NotBlank String id);
