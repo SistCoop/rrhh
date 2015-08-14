@@ -1,0 +1,38 @@
+apply plugin: 'war'
+apply plugin: 'jetty'
+//apply from: "$rootDir/gradle/functionalTest.gradle"
+apply from: "$rootDir/gradle/publishWarMaven.gradle"
+apply from: "$rootDir/gradle/cargo.gradle"
+//apply from: "$rootDir/gradle/smokeTest.gradle"
+
+dependencies {
+    compile project(":rrhh-core")
+    compile project(":rrhh-core-jaxrs")
+    compile project(":rrhh-integration:rrhh-client")
+    compile project(":rrhh-services")
+    compile project(":rrhh-model:rrhh-model-api")
+    compile project(":rrhh-model:rrhh-model-jpa")
+    providedCompile 'org.jboss.resteasy:resteasy-jaxrs:3.0.9.Final'
+}
+
+task createBuildInfoFile << {
+    def buildInfoFile = new File("$buildDir/build-info.properties")
+    Properties props = new Properties()
+    props.setProperty('version', project.version.toString())
+    props.setProperty('timestamp', project.buildTimestamp)
+    props.store(buildInfoFile.newWriter(), null)
+}
+
+war {
+    dependsOn createBuildInfoFile
+    baseName = 'rrhh'
+
+    from(buildDir) {
+        include 'build-info.properties'
+        into('WEB-INF/classes')
+    }
+}
+
+jettyRun {
+    contextPath = 'rrhh'
+}
