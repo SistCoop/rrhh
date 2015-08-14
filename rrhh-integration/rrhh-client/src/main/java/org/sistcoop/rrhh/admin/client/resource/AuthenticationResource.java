@@ -12,7 +12,7 @@ public interface AuthenticationResource {
 
     @POST
     @Path("/login")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
     public String login(@FormParam("sucursal") String sucursal, @FormParam("agencia") String agencia);
 

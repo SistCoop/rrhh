@@ -19,12 +19,20 @@ public class JaxRsFilterSucursalAgenciaAutotizacion implements ContainerRequestF
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
-        Cookie cookieCredentials = requestContext.getCookies().get("SISTCOOP_RRHH_CREDENTIAL");
-        // better injected
-        boolean authenticationStatus = AuthenticationService.authenticate(cookieCredentials.getValue());
+        if (requestContext.getUriInfo().getPath().equals("/authentication/login")) {
 
-        if (!authenticationStatus) {
-            throw new WebApplicationException(Status.UNAUTHORIZED);
+        } else {
+            Cookie cookieCredentials = requestContext.getCookies().get("SISTCOOP_RRHH_CREDENTIAL");
+            if (cookieCredentials == null) {
+                throw new WebApplicationException(Status.UNAUTHORIZED);
+            }
+
+            // better injected
+            boolean authenticationStatus = AuthenticationService.authenticate(cookieCredentials.getValue());
+
+            if (!authenticationStatus) {
+                throw new WebApplicationException(Status.UNAUTHORIZED);
+            }
         }
     }
 
