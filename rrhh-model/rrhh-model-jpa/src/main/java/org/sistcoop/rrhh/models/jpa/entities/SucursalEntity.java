@@ -18,92 +18,96 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "SUCURSAL")
+@NamedQueries(value = {
+        @NamedQuery(name = "SucursalEntity.findAll", query = "SELECT s FROM SucursalEntity s"),
+        @NamedQuery(name = "BovedaEntity.findByDenominacion", query = "SELECT s FROM SucursalEntity s WHERE s.denominacion = :denominacion") })
 public class SucursalEntity implements Serializable {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private String id;
-	private String denominacion;
+    private String id;
+    private String denominacion;
 
-	private Set<AgenciaEntity> agencias = new HashSet<AgenciaEntity>();
+    private Set<AgenciaEntity> agencias = new HashSet<AgenciaEntity>();
 
-	private Timestamp optlk;
+    private Timestamp optlk;
 
-	@Id	
-	@GeneratedValue(generator = "uuid2")
-	@GenericGenerator(name = "uuid2", strategy = "uuid2")
-	@Column(name = "ID")
-	public String getId() {
-		return id;
-	}
+    @Id
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(name = "ID")
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	@NotNull
-	@Size(min = 1, max = 60)
-	@NotBlank
-	@NaturalId(mutable = true)
-	@Column(name = "DENOMINACION")
-	public String getDenominacion() {
-		return denominacion;
-	}
+    @NotNull
+    @Size(min = 1, max = 60)
+    @NotBlank
+    @NaturalId(mutable = true)
+    @Column(name = "DENOMINACION")
+    public String getDenominacion() {
+        return denominacion;
+    }
 
-	public void setDenominacion(String denominacion) {
-		this.denominacion = denominacion;
-	}
+    public void setDenominacion(String denominacion) {
+        this.denominacion = denominacion;
+    }
 
-	@OneToMany(fetch = FetchType.LAZY, cascade= CascadeType.REMOVE, mappedBy = "sucursal")
-	public Set<AgenciaEntity> getAgencias() {
-		return agencias;
-	}
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "sucursal")
+    public Set<AgenciaEntity> getAgencias() {
+        return agencias;
+    }
 
-	public void setAgencias(Set<AgenciaEntity> agencias) {
-		this.agencias = agencias;
-	}
+    public void setAgencias(Set<AgenciaEntity> agencias) {
+        this.agencias = agencias;
+    }
 
-	@Version
-	public Timestamp getOptlk() {
-		return optlk;
-	}
+    @Version
+    public Timestamp getOptlk() {
+        return optlk;
+    }
 
-	public void setOptlk(Timestamp optlk) {
-		this.optlk = optlk;
-	}
+    public void setOptlk(Timestamp optlk) {
+        this.optlk = optlk;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((denominacion == null) ? 0 : denominacion.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((denominacion == null) ? 0 : denominacion.hashCode());
+        return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		SucursalEntity other = (SucursalEntity) obj;
-		if (denominacion == null) {
-			if (other.denominacion != null)
-				return false;
-		} else if (!denominacion.equals(other.denominacion))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SucursalEntity other = (SucursalEntity) obj;
+        if (denominacion == null) {
+            if (other.denominacion != null)
+                return false;
+        } else if (!denominacion.equals(other.denominacion))
+            return false;
+        return true;
+    }
 
 }

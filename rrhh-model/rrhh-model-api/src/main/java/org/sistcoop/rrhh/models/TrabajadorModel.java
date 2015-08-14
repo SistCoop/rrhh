@@ -2,28 +2,24 @@ package org.sistcoop.rrhh.models;
 
 public interface TrabajadorModel extends Model {
 
-	String getId();
+    String getId();
 
-	String getTipoDocumento();
+    String getTipoDocumento();
 
-	void setTipoDocumento(String tipoDocumento);
+    String getNumeroDocumento();
 
-	String getNumeroDocumento();
+    AgenciaModel getAgencia();
 
-	void setNumeroDocumento(String numeroDocumento);
+    void setAgencia(AgenciaModel agenciaModel);
 
-	AgenciaModel getAgencia();
+    AreaModel getArea();
 
-	void setAgencia(AgenciaModel agenciaModel);
+    void setArea(AreaModel areaModel);
 
-	AreaModel getArea();
+    CargoModel getCargo();
 
-	void setArea(AreaModel areaModel);
+    void setCargo(CargoModel cargoModel);
 
-	CargoModel getCargo();
-
-	void setCargo(CargoModel cargoModel);
-	
-	TrabajadorUsuarioModel getTrabajadorUsuarioModel();
+    TrabajadorUsuarioModel getTrabajadorUsuarioModel();
 
 }

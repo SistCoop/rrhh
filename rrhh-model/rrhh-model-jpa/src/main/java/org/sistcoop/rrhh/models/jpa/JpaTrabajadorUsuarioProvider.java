@@ -1,5 +1,6 @@
 package org.sistcoop.rrhh.models.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -9,78 +10,73 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
 import org.sistcoop.rrhh.models.TrabajadorUsuarioProvider;
 import org.sistcoop.rrhh.models.jpa.entities.TrabajadorEntity;
 import org.sistcoop.rrhh.models.jpa.entities.TrabajadorUsuarioEntity;
+import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
+import org.sistcoop.rrhh.models.search.SearchResultsModel;
 
 @Named
 @Stateless
 @Local(TrabajadorUsuarioProvider.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class JpaTrabajadorUsuarioProvider implements TrabajadorUsuarioProvider {
+public class JpaTrabajadorUsuarioProvider extends AbstractHibernateStorage implements
+        TrabajadorUsuarioProvider {
 
-	@PersistenceContext
-	protected EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
-	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-	}
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
 
-	@Override
-	public TrabajadorUsuarioModel addTrabajadorUsuario(
-			TrabajadorModel trabajadorModel, String usuario) {
+    @Override
+    public void close() {
+        // TODO Auto-generated method stub
+    }
 
-		TrabajadorUsuarioEntity trabajadorUsuarioEntity = new TrabajadorUsuarioEntity();
+    @Override
+    public TrabajadorUsuarioModel create(TrabajadorModel trabajadorModel, String usuario) {
+        TrabajadorEntity trabajadorEntity = em.find(TrabajadorEntity.class, trabajadorModel.getId());
 
-		TrabajadorEntity trabajadorEntity = TrabajadorAdapter.toTrabajadorEntity(trabajadorModel, em);
-		trabajadorUsuarioEntity.setTrabajador(trabajadorEntity);
+        TrabajadorUsuarioEntity trabajadorUsuarioEntity = new TrabajadorUsuarioEntity();
+        trabajadorUsuarioEntity.setTrabajador(trabajadorEntity);
+        trabajadorUsuarioEntity.setUsuario(usuario);
+        em.persist(trabajadorUsuarioEntity);
+        return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);
 
-		trabajadorUsuarioEntity.setUsuario(usuario);
+    }
 
-		em.persist(trabajadorUsuarioEntity);
-		return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);
-		
-	}
+    @Override
+    public boolean remove(TrabajadorUsuarioModel model) {
+        TrabajadorUsuarioEntity entity = em.find(TrabajadorUsuarioEntity.class, model.getId());
+        em.remove(entity);
+        return true;
+    }
 
-	@Override
-	public boolean removeTrabajadorUsuario(TrabajadorUsuarioModel model) {
+    @Override
+    public TrabajadorUsuarioModel findById(String id) {
+        TrabajadorUsuarioEntity entity = this.em.find(TrabajadorUsuarioEntity.class, id);
+        return entity != null ? new TrabajadorUsuarioAdapter(em, entity) : null;
+    }
 
-		TrabajadorUsuarioEntity trabajadorUsuarioEntity = em.find(TrabajadorUsuarioEntity.class, model.getId());
-		if (em.contains(trabajadorUsuarioEntity))
-			em.remove(trabajadorUsuarioEntity);
-		else
-			em.remove(em.getReference(TrabajadorUsuarioEntity.class, trabajadorUsuarioEntity.getId()));
-		return true;
-		
-	}
+    @Override
+    public SearchResultsModel<TrabajadorUsuarioModel> search(SearchCriteriaModel criteria) {
+        SearchResultsModel<TrabajadorUsuarioEntity> entityResult = find(criteria,
+                TrabajadorUsuarioEntity.class);
 
-	@Override
-	public TrabajadorUsuarioModel getTrabajadorUsuarioById(Integer id) {
-
-		TrabajadorUsuarioEntity trabajadorUsuarioEntity = this.em.find(TrabajadorUsuarioEntity.class, id);
-		return trabajadorUsuarioEntity != null ? new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity) : null;
-		
-	}
-
-	@Override
-	public TrabajadorUsuarioModel getTrabajadorUsuarioByUsuario(String usuario) {
-
-		TypedQuery<TrabajadorUsuarioEntity> query = em.createQuery("SELECT t FROM TrabajadorUsuarioEntity t WHERE t.usuario = :usuario", TrabajadorUsuarioEntity.class);
-		query.setParameter("usuario", usuario);
-		List<TrabajadorUsuarioEntity> list = query.getResultList();
-		if (list.size() > 0) {
-			for (TrabajadorUsuarioEntity trabajadorUsuarioEntity : list) {
-				return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);
-			}	
-		}
-		
-		return null;
-		
-	}
+        SearchResultsModel<TrabajadorUsuarioModel> modelResult = new SearchResultsModel<>();
+        List<TrabajadorUsuarioModel> list = new ArrayList<>();
+        for (TrabajadorUsuarioEntity entity : entityResult.getModels()) {
+            list.add(new TrabajadorUsuarioAdapter(em, entity));
+        }
+        modelResult.setTotalSize(entityResult.getTotalSize());
+        modelResult.setModels(list);
+        return modelResult;
+    }
 
 }

@@ -1,24 +1,24 @@
 package org.sistcoop.rrhh.models;
 
-import java.util.List;
-
 import javax.ejb.Local;
 
+import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
+import org.sistcoop.rrhh.models.search.SearchResultsModel;
 import org.sistcoop.rrhh.provider.Provider;
 
 @Local
 public interface SucursalProvider extends Provider {
 
-	SucursalModel addSucursal(String abreviatura);
+    SucursalModel create(String denominacion);
 
-	boolean removeSucursal(SucursalModel sucursalModel);
+    boolean remove(SucursalModel sucursalModel);
 
-	SucursalModel getSucursalById(String id);
-	
-	SucursalModel getSucursalByDenominacion(String denominacion);
+    SucursalModel findById(String id);
 
-	List<SucursalModel> getSucursales();
+    SearchResultsModel<SucursalModel> search();
 
-	List<SucursalModel> getSucursales(String filterText, int firstResult, int maxResults);
+    SearchResultsModel<SucursalModel> search(SearchCriteriaModel criteria);
+
+    SearchResultsModel<SucursalModel> search(SearchCriteriaModel criteria, String filterText);
 
 }

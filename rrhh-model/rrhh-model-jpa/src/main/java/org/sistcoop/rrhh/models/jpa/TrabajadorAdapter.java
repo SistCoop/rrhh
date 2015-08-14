@@ -15,123 +15,112 @@ import org.sistcoop.rrhh.models.jpa.entities.TrabajadorUsuarioEntity;
 
 public class TrabajadorAdapter implements TrabajadorModel {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected TrabajadorEntity trabajadorEntity;
-	protected EntityManager em;
+    protected TrabajadorEntity trabajadorEntity;
+    protected EntityManager em;
 
-	public TrabajadorAdapter(EntityManager em, TrabajadorEntity trabajadorEntity) {
-		this.em = em;
-		this.trabajadorEntity = trabajadorEntity;
-	}
+    public TrabajadorAdapter(EntityManager em, TrabajadorEntity trabajadorEntity) {
+        this.em = em;
+        this.trabajadorEntity = trabajadorEntity;
+    }
 
-	public TrabajadorEntity getTrabajadorEntity() {
-		return trabajadorEntity;
-	}
+    public TrabajadorEntity getTrabajadorEntity() {
+        return trabajadorEntity;
+    }
 
-	@Override
-	public void commit() {
-		em.merge(trabajadorEntity);
-	}
+    @Override
+    public void commit() {
+        em.merge(trabajadorEntity);
+    }
 
-	@Override
-	public String getId() {
-		return trabajadorEntity.getId();
-	}
+    @Override
+    public String getId() {
+        return trabajadorEntity.getId();
+    }
 
-	@Override
-	public String getTipoDocumento() {
-		return trabajadorEntity.getTipoDocumento();
-	}
+    @Override
+    public String getTipoDocumento() {
+        return trabajadorEntity.getTipoDocumento();
+    }
 
-	@Override
-	public void setTipoDocumento(String tipoDocumento) {
-		trabajadorEntity.setTipoDocumento(tipoDocumento);
-	}
+    @Override
+    public String getNumeroDocumento() {
+        return trabajadorEntity.getNumeroDocumento();
+    }
 
-	@Override
-	public String getNumeroDocumento() {
-		return trabajadorEntity.getNumeroDocumento();
-	}
+    @Override
+    public AgenciaModel getAgencia() {
+        return new AgenciaAdapter(em, trabajadorEntity.getAgencia());
+    }
 
-	@Override
-	public void setNumeroDocumento(String numeroDocumento) {
-		trabajadorEntity.setNumeroDocumento(numeroDocumento);
-	}
+    @Override
+    public void setAgencia(AgenciaModel agenciaModel) {
+        AgenciaEntity agenciaEntity = AgenciaAdapter.toAgenciaEntity(agenciaModel, em);
+        trabajadorEntity.setAgencia(agenciaEntity);
+    }
 
-	@Override
-	public AgenciaModel getAgencia() {
-		return new AgenciaAdapter(em, trabajadorEntity.getAgencia());
-	}
+    public static TrabajadorEntity toTrabajadorEntity(TrabajadorModel model, EntityManager em) {
+        if (model instanceof TrabajadorAdapter) {
+            return ((TrabajadorAdapter) model).getTrabajadorEntity();
+        }
+        return em.getReference(TrabajadorEntity.class, model.getId());
+    }
 
-	@Override
-	public void setAgencia(AgenciaModel agenciaModel) {
-		AgenciaEntity agenciaEntity = AgenciaAdapter.toAgenciaEntity(agenciaModel, em);
-		trabajadorEntity.setAgencia(agenciaEntity);
-	}
+    @Override
+    public AreaModel getArea() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public static TrabajadorEntity toTrabajadorEntity(TrabajadorModel model, EntityManager em) {
-		if (model instanceof TrabajadorAdapter) {
-			return ((TrabajadorAdapter) model).getTrabajadorEntity();
-		}
-		return em.getReference(TrabajadorEntity.class, model.getId());
-	}
+    @Override
+    public void setArea(AreaModel areaModel) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public AreaModel getArea() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public void setArea(AreaModel areaModel) {
-		// TODO Auto-generated method stub
+    @Override
+    public CargoModel getCargo() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	}
+    @Override
+    public void setCargo(CargoModel cargoModel) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public CargoModel getCargo() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    }
 
-	@Override
-	public void setCargo(CargoModel cargoModel) {
-		// TODO Auto-generated method stub
+    @Override
+    public TrabajadorUsuarioModel getTrabajadorUsuarioModel() {
+        Set<TrabajadorUsuarioEntity> trabajadorUsuarioEntities = trabajadorEntity.getTrabajadorUsuarios();
+        TrabajadorUsuarioEntity trabajadorUsuarioEntity = null;
+        for (TrabajadorUsuarioEntity entity : trabajadorUsuarioEntities) {
+            trabajadorUsuarioEntity = entity;
+            break;
+        }
 
-	}
+        if (trabajadorUsuarioEntity != null) {
+            return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);
+        } else {
+            return null;
+        }
+    }
 
-	@Override
-	public TrabajadorUsuarioModel getTrabajadorUsuarioModel() {
-		Set<TrabajadorUsuarioEntity> trabajadorUsuarioEntities = trabajadorEntity.getTrabajadorUsuarios();
-		TrabajadorUsuarioEntity trabajadorUsuarioEntity = null;
-		for (TrabajadorUsuarioEntity entity : trabajadorUsuarioEntities) {
-			trabajadorUsuarioEntity = entity;
-			break;
-		}
-		
-		if(trabajadorUsuarioEntity != null) {
-			return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);	
-		}			
-		else {
-			return null;	
-		}			
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || !(o instanceof TrabajadorModel))
-			return false;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || !(o instanceof TrabajadorModel))
+            return false;
 
-		TrabajadorModel that = (TrabajadorModel) o;
-		return that.getId().equals(getId());
-	}
+        TrabajadorModel that = (TrabajadorModel) o;
+        return that.getId().equals(getId());
+    }
 
-	@Override
-	public int hashCode() {
-		return getId().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 
 }

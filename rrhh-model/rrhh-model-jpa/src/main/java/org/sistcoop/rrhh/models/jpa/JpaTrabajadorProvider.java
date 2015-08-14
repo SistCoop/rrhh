@@ -7,6 +7,7 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,102 +18,102 @@ import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.jpa.entities.AgenciaEntity;
 import org.sistcoop.rrhh.models.jpa.entities.TrabajadorEntity;
+import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
+import org.sistcoop.rrhh.models.search.SearchResultsModel;
+import org.sistcoop.rrhh.models.search.filters.TrabajadorFilterProvider;
 
 @Named
 @Stateless
 @Local(TrabajadorProvider.class)
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public class JpaTrabajadorProvider implements TrabajadorProvider {
+public class JpaTrabajadorProvider extends AbstractHibernateStorage implements TrabajadorProvider {
 
-	@PersistenceContext
-	protected EntityManager em;
+    @PersistenceContext
+    protected EntityManager em;
 
-	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-	}
+    @Inject
+    private TrabajadorFilterProvider filterProvider;
 
-	@Override
-	public TrabajadorModel addTrabajador(AgenciaModel agenciaModel, String tipoDocumento, String numeroDocumento) {
-		TrabajadorEntity trabajadorEntity = new TrabajadorEntity();
+    @Override
+    protected EntityManager getEntityManager() {
+        return em;
+    }
 
-		AgenciaEntity agenciaEntity = AgenciaAdapter.toAgenciaEntity(agenciaModel, em);
-		trabajadorEntity.setAgencia(agenciaEntity);
+    @Override
+    public void close() {
+        // TODO Auto-generated method stub
+    }
 
-		trabajadorEntity.setTipoDocumento(tipoDocumento);
-		trabajadorEntity.setNumeroDocumento(numeroDocumento);		
+    @Override
+    public TrabajadorModel create(AgenciaModel agenciaModel, String tipoDocumento, String numeroDocumento) {
+        AgenciaEntity agenciaEntity = em.find(AgenciaEntity.class, agenciaModel.getId());
 
-		em.persist(trabajadorEntity);
-		return new TrabajadorAdapter(em, trabajadorEntity);
-	}
+        TrabajadorEntity trabajadorEntity = new TrabajadorEntity();
+        trabajadorEntity.setAgencia(agenciaEntity);
+        trabajadorEntity.setTipoDocumento(tipoDocumento);
+        trabajadorEntity.setNumeroDocumento(numeroDocumento);
 
-	@Override
-	public boolean removeTrabajador(TrabajadorModel TrabajadorModel) {
-		TrabajadorEntity TrabajadorEntity = em.find(TrabajadorEntity.class, TrabajadorModel.getId());
-		if (em.contains(TrabajadorEntity))
-			em.remove(TrabajadorEntity);
-		else
-			em.remove(em.getReference(TrabajadorEntity.class, TrabajadorEntity.getId()));
-		return true;
-	}
+        em.persist(trabajadorEntity);
+        return new TrabajadorAdapter(em, trabajadorEntity);
+    }
 
-	@Override
-	public TrabajadorModel getTrabajadorById(String id) {
-		TrabajadorEntity trabajadorEntity = this.em.find(TrabajadorEntity.class, id);
-		return trabajadorEntity != null ? new TrabajadorAdapter(em, trabajadorEntity) : null;
-	}
+    @Override
+    public boolean remove(TrabajadorModel TrabajadorModel) {
+        TrabajadorEntity TrabajadorEntity = em.find(TrabajadorEntity.class, TrabajadorModel.getId());
+        em.remove(TrabajadorEntity);
+        return true;
+    }
 
-	@Override
-	public TrabajadorModel getTrabajadorByTipoNumeroDocumento(String tipoDocumento, String numeroDocumento) {
-		TypedQuery<TrabajadorEntity> query = em.createQuery("SELECT t FROM TrabajadorEntity t WHERE t.tipoDocumento = :tipoDocumento AND t.numeroDocumento = :numeroDocumento", TrabajadorEntity.class);
-		query.setParameter("tipoDocumento", tipoDocumento);
-		query.setParameter("numeroDocumento", numeroDocumento);
-		List<TrabajadorEntity> results = query.getResultList();
-		if (results.size() == 0)
-			return null;
-		return new TrabajadorAdapter(em, results.get(0));
-	}
+    @Override
+    public TrabajadorModel findById(String id) {
+        TrabajadorEntity trabajadorEntity = this.em.find(TrabajadorEntity.class, id);
+        return trabajadorEntity != null ? new TrabajadorAdapter(em, trabajadorEntity) : null;
+    }
 
-	@Override
-	public List<TrabajadorModel> getTrabajadores(String filterText,
-			int firstResult, int maxResults) {
-		TypedQuery<TrabajadorEntity> query = em.createQuery("SELECT a FROM TrabajadorEntity a WHERE a.numeroDocumento LIKE :filterText", TrabajadorEntity.class);			
-		query.setParameter("filterText", "%" + filterText + "%");
-		if (firstResult != -1) {
-			query.setFirstResult(firstResult);
-		}
-		if (maxResults != -1) {
-			query.setMaxResults(maxResults);
-		}
-		
-		List<TrabajadorEntity> entities = query.getResultList();
-		List<TrabajadorModel> result = new ArrayList<>();
-		for (TrabajadorEntity trabajadorEntity : entities) {
-			result.add(new TrabajadorAdapter(em, trabajadorEntity));
-		}
-		return result;
-	}
+    @Override
+    public SearchResultsModel<TrabajadorModel> search() {
+        TypedQuery<TrabajadorEntity> query = em.createNamedQuery("TrabajadorEntity.findAll",
+                TrabajadorEntity.class);
 
-	@Override
-	public List<TrabajadorModel> getTrabajadores(AgenciaModel agencia,
-			String filterText, int firstResult, int maxResults) {
-		TypedQuery<TrabajadorEntity> query = em.createQuery("SELECT a FROM TrabajadorEntity a WHERE a.agencia.denominacion = :agencia AND a.agencia.sucursal.denominacion = :sucursal AND a.numeroDocumento LIKE :filterText", TrabajadorEntity.class);			
-		query.setParameter("sucursal", agencia.getSucursal().getDenominacion());
-		query.setParameter("agencia", agencia.getDenominacion());
-		query.setParameter("filterText", "%" + filterText + "%");
-		if (firstResult != -1) {
-			query.setFirstResult(firstResult);
-		}
-		if (maxResults != -1) {
-			query.setMaxResults(maxResults);
-		}
-		
-		List<TrabajadorEntity> entities = query.getResultList();
-		List<TrabajadorModel> result = new ArrayList<>();
-		for (TrabajadorEntity trabajadorEntity : entities) {
-			result.add(new TrabajadorAdapter(em, trabajadorEntity));
-		}
-		return result;
-	}
+        List<TrabajadorEntity> entities = query.getResultList();
+        List<TrabajadorModel> models = new ArrayList<TrabajadorModel>();
+        for (TrabajadorEntity bovedaEntity : entities) {
+            models.add(new TrabajadorAdapter(em, bovedaEntity));
+        }
+
+        SearchResultsModel<TrabajadorModel> result = new SearchResultsModel<>();
+        result.setModels(models);
+        result.setTotalSize(models.size());
+        return result;
+    }
+
+    @Override
+    public SearchResultsModel<TrabajadorModel> search(SearchCriteriaModel criteria) {
+        SearchResultsModel<TrabajadorEntity> entityResult = find(criteria, TrabajadorEntity.class);
+
+        SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
+        List<TrabajadorModel> list = new ArrayList<>();
+        for (TrabajadorEntity entity : entityResult.getModels()) {
+            list.add(new TrabajadorAdapter(em, entity));
+        }
+        modelResult.setTotalSize(entityResult.getTotalSize());
+        modelResult.setModels(list);
+        return modelResult;
+    }
+
+    @Override
+    public SearchResultsModel<TrabajadorModel> search(SearchCriteriaModel criteria, String filterText) {
+        SearchResultsModel<TrabajadorEntity> entityResult = findFullText(criteria, TrabajadorEntity.class,
+                filterText, filterProvider.getNumeroDocumentoFilter());
+
+        SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
+        List<TrabajadorModel> list = new ArrayList<>();
+        for (TrabajadorEntity entity : entityResult.getModels()) {
+            list.add(new TrabajadorAdapter(em, entity));
+        }
+        modelResult.setTotalSize(entityResult.getTotalSize());
+        modelResult.setModels(list);
+        return modelResult;
+    }
 
 }
