@@ -57,14 +57,16 @@ public class AuthenticationResourceImpl implements AuthenticationResource {
         }
 
         // Verificar
-        TrabajadorUsuarioModel trabajadorUsuarioModel = results.getModels().get(0);
-        TrabajadorModel trabajadorModel = trabajadorUsuarioModel.getTrabajador();
-        AgenciaModel agenciaModel = trabajadorModel.getAgencia();
-        SucursalModel sucursalModel = agenciaModel.getSucursal();
+        if (!sucursal.equals("master") && !agencia.equals("master")) {
+            TrabajadorUsuarioModel trabajadorUsuarioModel = results.getModels().get(0);
+            TrabajadorModel trabajadorModel = trabajadorUsuarioModel.getTrabajador();
+            AgenciaModel agenciaModel = trabajadorModel.getAgencia();
+            SucursalModel sucursalModel = agenciaModel.getSucursal();
 
-        if (!sucursal.equals(sucursalModel.getDenominacion())
-                || !agencia.equals(agenciaModel.getDenominacion())) {
-            throw new BadRequestException("Usuario no autorizado para la agencia y sucursal indicada");
+            if (!sucursal.equals(sucursalModel.getDenominacion())
+                    || !agencia.equals(agenciaModel.getDenominacion())) {
+                throw new BadRequestException("Usuario no autorizado para la agencia y sucursal indicada");
+            }
         }
 
         // Crear persitencia de autenticacion
