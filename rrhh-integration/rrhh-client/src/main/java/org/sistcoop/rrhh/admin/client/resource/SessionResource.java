@@ -7,6 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
+import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Path("/session/account")
 public interface SessionResource {
@@ -21,4 +22,9 @@ public interface SessionResource {
     @Produces(MediaType.APPLICATION_JSON)
     public AgenciaRepresentation getAgencia();
 
+    @GET
+    @Path("/trabajador")
+    @Produces(MediaType.APPLICATION_JSON)
+    public TrabajadorRepresentation getTrabajador();
+    
 }

@@ -24,6 +24,7 @@ import org.sistcoop.rrhh.models.search.filters.TrabajadorUsuarioFilterProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
+import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 
 @Stateless
 public class SessionResourceImpl implements SessionResource {
@@ -63,7 +64,7 @@ public class SessionResourceImpl implements SessionResource {
         } else {
             if (results.getModels().isEmpty()) {
                 throw new BadRequestException("Usuario no encontrado en RRHH");
-            } 
+            }
         }
 
         // Verificar
@@ -78,7 +79,6 @@ public class SessionResourceImpl implements SessionResource {
         } else {
             throw new NotFoundException();
         }
-
     }
 
     @Override
@@ -89,6 +89,7 @@ public class SessionResourceImpl implements SessionResource {
         AccessToken accessToken = securityContext.getToken();
 
         // Obtener Usuario
+        Set<String> roles = accessToken.getRealmAccess().getRoles();
         String usuario = accessToken.getPreferredUsername();
 
         SearchCriteriaModel searchCriteriaBean = new SearchCriteriaModel();
@@ -99,8 +100,14 @@ public class SessionResourceImpl implements SessionResource {
         // search
         SearchResultsModel<TrabajadorUsuarioModel> results = trabajadorUsuarioProvider
                 .search(searchCriteriaBean);
-        if (results.getTotalSize() == 0) {
-            throw new BadRequestException("Usuario no encontrado en RRHH");
+        if (roles.contains("ADMIN")) {
+            if (results.getModels().isEmpty()) {
+                return null;
+            }
+        } else {
+            if (results.getModels().isEmpty()) {
+                throw new BadRequestException("Usuario no encontrado en RRHH");
+            }
         }
 
         // Verificar
@@ -109,6 +116,47 @@ public class SessionResourceImpl implements SessionResource {
         AgenciaModel agenciaModel = trabajadorModel.getAgencia();
 
         AgenciaRepresentation rep = ModelToRepresentation.toRepresentation(agenciaModel);
+        if (rep != null) {
+            return rep;
+        } else {
+            throw new NotFoundException();
+        }
+    }
+
+    @Override
+    public TrabajadorRepresentation getTrabajador() {
+        // Just to show how to user info from access token in REST endpoint
+        KeycloakSecurityContext securityContext = (KeycloakSecurityContext) httpRequest
+                .getAttribute(KeycloakSecurityContext.class.getName());
+        AccessToken accessToken = securityContext.getToken();
+
+        // Obtener Usuario
+        Set<String> roles = accessToken.getRealmAccess().getRoles();
+        String usuario = accessToken.getPreferredUsername();
+
+        SearchCriteriaModel searchCriteriaBean = new SearchCriteriaModel();
+        // add filter
+        searchCriteriaBean.addFilter(trabajadorUsuarioFilterProvider.getUsuarioFilter(), usuario,
+                SearchCriteriaFilterOperator.eq);
+
+        // search
+        SearchResultsModel<TrabajadorUsuarioModel> results = trabajadorUsuarioProvider
+                .search(searchCriteriaBean);
+        if (roles.contains("ADMIN")) {
+            if (results.getModels().isEmpty()) {
+                return null;
+            }
+        } else {
+            if (results.getModels().isEmpty()) {
+                throw new BadRequestException("Usuario no encontrado en RRHH");
+            }
+        }
+
+        // Verificar
+        TrabajadorUsuarioModel trabajadorUsuarioModel = results.getModels().get(0);
+        TrabajadorModel trabajadorModel = trabajadorUsuarioModel.getTrabajador();
+
+        TrabajadorRepresentation rep = ModelToRepresentation.toRepresentation(trabajadorModel);
         if (rep != null) {
             return rep;
         } else {
