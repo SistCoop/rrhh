@@ -30,9 +30,8 @@ public interface TrabajadoresResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsRepresentation<TrabajadorRepresentation> search(
-            @QueryParam("sucursal") String sucursal, @QueryParam("agencia") String agencia,
-            @QueryParam("tipoDocumento") String tipoDocumento,
-            @QueryParam("numeroDocumento") String numeroDocumento,
+
+    @QueryParam("tipoDocumento") String tipoDocumento, @QueryParam("numeroDocumento") String numeroDocumento,
             @QueryParam("filterText") @DefaultValue(value = "") String filterText,
             @QueryParam("page") @DefaultValue(value = "") Integer page,
             @QueryParam("pageSize") @DefaultValue(value = "20") Integer pageSize);

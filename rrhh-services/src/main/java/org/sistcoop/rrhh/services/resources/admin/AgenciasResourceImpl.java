@@ -70,8 +70,8 @@ public class AgenciasResourceImpl implements AgenciasResource {
     }
 
     @Override
-    public SearchResultsRepresentation<AgenciaRepresentation> search(String sucursal, String denominacion,
-            String filterText, Integer page, Integer pageSize) {
+    public SearchResultsRepresentation<AgenciaRepresentation> search(String denominacion, String filterText,
+            Integer page, Integer pageSize) {
 
         // add paging
         PagingModel paging = new PagingModel();
@@ -85,10 +85,8 @@ public class AgenciasResourceImpl implements AgenciasResource {
         searchCriteriaBean.addOrder(agenciaFilterProvider.getDenominacionFilter(), true);
 
         // add filter
-        if (sucursal != null) {
-            searchCriteriaBean.addFilter(agenciaFilterProvider.getIdSucursalFilter(), sucursal,
-                    SearchCriteriaFilterOperator.eq);
-        }
+        searchCriteriaBean.addFilter(agenciaFilterProvider.getIdSucursalFilter(), getSucursalModel().getId(),
+                SearchCriteriaFilterOperator.eq);
         if (denominacion != null) {
             searchCriteriaBean.addFilter(agenciaFilterProvider.getDenominacionFilter(), denominacion,
                     SearchCriteriaFilterOperator.eq);

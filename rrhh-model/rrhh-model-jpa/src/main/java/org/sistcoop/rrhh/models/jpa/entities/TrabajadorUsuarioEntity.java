@@ -49,6 +49,7 @@ public class TrabajadorUsuarioEntity implements Serializable {
     @NotNull
     @Size(min = 1, max = 60)
     @NotBlank
+    @Column(name = "USUARIO")
     public String getUsuario() {
         return usuario;
     }
@@ -59,7 +60,7 @@ public class TrabajadorUsuarioEntity implements Serializable {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey)
+    @JoinColumn(foreignKey = @ForeignKey, name = "TRABAJADOR_ID")
     public TrabajadorEntity getTrabajador() {
         return trabajador;
     }

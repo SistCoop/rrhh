@@ -33,7 +33,7 @@ public interface SucursalesResource {
     public SearchResultsRepresentation<SucursalRepresentation> search(
             @QueryParam("denominacion") String denominacion,
             @QueryParam("filterText") @DefaultValue(value = "") String filterText,
-            @QueryParam("page") @DefaultValue(value = "") Integer page,
-            @QueryParam("pageSize") @DefaultValue(value = "20") Integer pageSize);
+            @QueryParam("page") @DefaultValue(value = "1") int page,
+            @QueryParam("pageSize") @DefaultValue(value = "20") int pageSize);
 
 }

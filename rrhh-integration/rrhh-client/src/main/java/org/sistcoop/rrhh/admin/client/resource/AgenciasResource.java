@@ -30,10 +30,10 @@ public interface AgenciasResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsRepresentation<AgenciaRepresentation> search(@QueryParam("sucursal") String sucursal,
+    public SearchResultsRepresentation<AgenciaRepresentation> search(
             @QueryParam("denominacion") String denominacion,
             @QueryParam("filterText") @DefaultValue(value = "") String filterText,
-            @QueryParam("page") @DefaultValue(value = "") Integer page,
+            @QueryParam("page") @DefaultValue(value = "1") Integer page,
             @QueryParam("pageSize") @DefaultValue(value = "20") Integer pageSize);
 
 }

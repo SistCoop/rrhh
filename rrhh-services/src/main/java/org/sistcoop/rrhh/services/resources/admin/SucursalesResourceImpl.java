@@ -58,7 +58,7 @@ public class SucursalesResourceImpl implements SucursalesResource {
 
     @Override
     public SearchResultsRepresentation<SucursalRepresentation> search(String denominacion, String filterText,
-            Integer page, Integer pageSize) {
+            int page, int pageSize) {
 
         // add paging
         PagingModel paging = new PagingModel();

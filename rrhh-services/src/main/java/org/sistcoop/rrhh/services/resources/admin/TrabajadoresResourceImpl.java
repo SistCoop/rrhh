@@ -70,8 +70,8 @@ public class TrabajadoresResourceImpl implements TrabajadoresResource {
     }
 
     @Override
-    public SearchResultsRepresentation<TrabajadorRepresentation> search(String sucursal, String agencia,
-            String tipoDocumento, String numeroDocumento, String filterText, Integer page, Integer pageSize) {
+    public SearchResultsRepresentation<TrabajadorRepresentation> search(String tipoDocumento,
+            String numeroDocumento, String filterText, Integer page, Integer pageSize) {
 
         // add paging
         PagingModel paging = new PagingModel();
@@ -85,14 +85,8 @@ public class TrabajadoresResourceImpl implements TrabajadoresResource {
         searchCriteriaBean.addOrder(trabajadorFilterProvider.getTipoDocumentoFilter(), true);
 
         // add filter
-        if (sucursal != null) {
-            searchCriteriaBean.addFilter(trabajadorFilterProvider.getIdSucursalFilter(), sucursal,
-                    SearchCriteriaFilterOperator.eq);
-        }
-        if (agencia != null) {
-            searchCriteriaBean.addFilter(trabajadorFilterProvider.getIdAgenciaFilter(), agencia,
-                    SearchCriteriaFilterOperator.eq);
-        }
+        searchCriteriaBean.addFilter(trabajadorFilterProvider.getIdAgenciaFilter(),
+                getAgenciaModel().getId(), SearchCriteriaFilterOperator.eq);
         if (tipoDocumento != null) {
             searchCriteriaBean.addFilter(trabajadorFilterProvider.getTipoDocumentoFilter(), tipoDocumento,
                     SearchCriteriaFilterOperator.eq);
