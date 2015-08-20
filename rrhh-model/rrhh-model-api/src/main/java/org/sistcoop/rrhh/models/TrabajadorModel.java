@@ -22,4 +22,5 @@ public interface TrabajadorModel extends Model {
 
     TrabajadorUsuarioModel getTrabajadorUsuarioModel();
 
+    void setTrabajadorUsuarioModel(TrabajadorUsuarioModel trabajadorUsuarioModel);
 }

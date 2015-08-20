@@ -16,11 +16,14 @@ import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.AgenciaProvider;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
+import org.sistcoop.rrhh.models.TrabajadorUsuarioProvider;
 import org.sistcoop.rrhh.models.search.PagingModel;
 import org.sistcoop.rrhh.models.search.SearchCriteriaFilterOperator;
 import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
 import org.sistcoop.rrhh.models.search.SearchResultsModel;
 import org.sistcoop.rrhh.models.search.filters.TrabajadorFilterProvider;
+import org.sistcoop.rrhh.models.search.filters.TrabajadorUsuarioFilterProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.models.utils.RepresentationToModel;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
@@ -34,6 +37,15 @@ public class TrabajadoresRootResourceImpl implements TrabajadoresRootResource {
     private TrabajadorProvider trabajadorProvider;
 
     @Inject
+    private TrabajadorUsuarioProvider trabajadorUsuarioProvider;
+
+    @Inject
+    private TrabajadorUsuarioFilterProvider trabajadorUsuarioFilterProvider;
+
+    @Inject
+    private TrabajadorFilterProvider trabajadorFilterProvider;
+
+    @Inject
     private AgenciaProvider agenciaProvider;
 
     @Inject
@@ -41,9 +53,6 @@ public class TrabajadoresRootResourceImpl implements TrabajadoresRootResource {
 
     @Context
     private UriInfo uriInfo;
-
-    @Inject
-    private TrabajadorFilterProvider trabajadorFilterProvider;
 
     @Inject
     private TrabajadorResource trabajadorResource;
@@ -66,8 +75,30 @@ public class TrabajadoresRootResourceImpl implements TrabajadoresRootResource {
     }
 
     @Override
-    public SearchResultsRepresentation<TrabajadorRepresentation> search(String documento, String numero,
-            String sucursal, String agencia, String filterText, int page, int pageSize) {
+    public SearchResultsRepresentation<TrabajadorRepresentation> search(String usuario, String documento,
+            String numero, String sucursal, String agencia, String filterText, int page, int pageSize) {
+
+        // add filter
+        if (usuario != null) {
+            SearchCriteriaModel searchCriteriaBean1 = new SearchCriteriaModel();
+
+            searchCriteriaBean1.addFilter(trabajadorUsuarioFilterProvider.getUsuarioFilter(), usuario,
+                    SearchCriteriaFilterOperator.eq);
+
+            SearchResultsModel<TrabajadorUsuarioModel> results = trabajadorUsuarioProvider
+                    .search(searchCriteriaBean1);
+
+            SearchResultsRepresentation<TrabajadorRepresentation> rep = new SearchResultsRepresentation<>();
+            List<TrabajadorRepresentation> representations = new ArrayList<>();
+            for (TrabajadorUsuarioModel trabajadorUsuarioModel : results.getModels()) {
+                representations.add(ModelToRepresentation.toRepresentation(trabajadorUsuarioModel
+                        .getTrabajador()));
+            }
+            rep.setTotalSize(results.getTotalSize());
+            rep.setItems(representations);
+
+            return rep;
+        }
 
         // add paging
         PagingModel paging = new PagingModel();
@@ -76,11 +107,6 @@ public class TrabajadoresRootResourceImpl implements TrabajadoresRootResource {
 
         SearchCriteriaModel searchCriteriaBean = new SearchCriteriaModel();
         searchCriteriaBean.setPaging(paging);
-
-        // add ordery by
-        searchCriteriaBean.addOrder(trabajadorFilterProvider.getTipoDocumentoFilter(), true);
-
-        // add filter
         if (documento != null) {
             searchCriteriaBean.addFilter(trabajadorFilterProvider.getTipoDocumentoFilter(), documento,
                     SearchCriteriaFilterOperator.eq);

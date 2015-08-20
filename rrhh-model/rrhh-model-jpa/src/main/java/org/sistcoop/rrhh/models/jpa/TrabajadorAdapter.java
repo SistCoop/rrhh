@@ -1,7 +1,5 @@
 package org.sistcoop.rrhh.models.jpa;
 
-import java.util.Set;
-
 import javax.persistence.EntityManager;
 
 import org.sistcoop.rrhh.models.AgenciaModel;
@@ -93,17 +91,22 @@ public class TrabajadorAdapter implements TrabajadorModel {
 
     @Override
     public TrabajadorUsuarioModel getTrabajadorUsuarioModel() {
-        Set<TrabajadorUsuarioEntity> trabajadorUsuarioEntities = trabajadorEntity.getTrabajadorUsuarios();
-        TrabajadorUsuarioEntity trabajadorUsuarioEntity = null;
-        for (TrabajadorUsuarioEntity entity : trabajadorUsuarioEntities) {
-            trabajadorUsuarioEntity = entity;
-            break;
-        }
-
+        TrabajadorUsuarioEntity trabajadorUsuarioEntity = trabajadorEntity.getTrabajadorUsuario();
         if (trabajadorUsuarioEntity != null) {
             return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void setTrabajadorUsuarioModel(TrabajadorUsuarioModel trabajadorUsuarioModel) {
+        if (trabajadorUsuarioModel != null) {
+            TrabajadorUsuarioEntity trabajadorUsuarioEntity = TrabajadorUsuarioAdapter
+                    .toTrabajadorUsuarioEntity(trabajadorUsuarioModel, em);
+            trabajadorEntity.setTrabajadorUsuario(trabajadorUsuarioEntity);
+        } else {
+            trabajadorEntity.setTrabajadorUsuario(null);
         }
     }
 

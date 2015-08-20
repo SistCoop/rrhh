@@ -37,13 +37,17 @@ public class TrabajadorManager {
             trabajadorUsuarioModel.setUsuario(usuario);
             trabajadorUsuarioModel.commit();
         } else {
-            trabajadorUsuarioProvider.create(trabajadorModel, usuario);
+            trabajadorUsuarioModel = trabajadorUsuarioProvider.create(trabajadorModel, usuario);
+            trabajadorModel.setTrabajadorUsuarioModel(trabajadorUsuarioModel);
+            trabajadorModel.commit();
         }
     }
 
     public void removeUsuario(TrabajadorModel trabajadorModel) {
         TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorModel.getTrabajadorUsuarioModel();
         if (trabajadorUsuarioModel != null) {
+            trabajadorModel.setTrabajadorUsuarioModel(null);
+            trabajadorModel.commit();
             trabajadorUsuarioProvider.remove(trabajadorUsuarioModel);
         }
     }

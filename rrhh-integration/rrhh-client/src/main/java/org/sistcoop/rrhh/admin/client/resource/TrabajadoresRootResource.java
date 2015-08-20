@@ -31,6 +31,7 @@ public interface TrabajadoresRootResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsRepresentation<TrabajadorRepresentation> search(
+            @QueryParam("usuario") String usuario, 
             @QueryParam("documento") String documento, @QueryParam("numero") String numero,
             @QueryParam("sucursal") String sucursal, @QueryParam("agencia") String agencia,
             @QueryParam("filterText") String filterText,
