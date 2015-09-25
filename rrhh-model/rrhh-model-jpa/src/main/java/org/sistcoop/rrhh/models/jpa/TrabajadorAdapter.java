@@ -15,8 +15,8 @@ public class TrabajadorAdapter implements TrabajadorModel {
 
     private static final long serialVersionUID = 1L;
 
-    protected TrabajadorEntity trabajadorEntity;
-    protected EntityManager em;
+    private TrabajadorEntity trabajadorEntity;
+    private EntityManager em;
 
     public TrabajadorAdapter(EntityManager em, TrabajadorEntity trabajadorEntity) {
         this.em = em;

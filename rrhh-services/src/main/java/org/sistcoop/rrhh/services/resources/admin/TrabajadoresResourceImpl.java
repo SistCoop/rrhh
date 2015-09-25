@@ -10,22 +10,22 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.sistcoop.rrhh.Jsend;
 import org.sistcoop.rrhh.admin.client.resource.TrabajadorResource;
 import org.sistcoop.rrhh.admin.client.resource.TrabajadoresResource;
 import org.sistcoop.rrhh.models.AgenciaModel;
 import org.sistcoop.rrhh.models.AgenciaProvider;
+import org.sistcoop.rrhh.models.ModelDuplicateException;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.search.PagingModel;
 import org.sistcoop.rrhh.models.search.SearchCriteriaFilterOperator;
 import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
 import org.sistcoop.rrhh.models.search.SearchResultsModel;
-import org.sistcoop.rrhh.models.search.filters.TrabajadorFilterProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.models.utils.RepresentationToModel;
 import org.sistcoop.rrhh.representations.idm.TrabajadorRepresentation;
 import org.sistcoop.rrhh.representations.idm.search.SearchResultsRepresentation;
+import org.sistcoop.rrhh.services.ErrorResponse;
 
 @Stateless
 public class TrabajadoresResourceImpl implements TrabajadoresResource {
@@ -48,9 +48,6 @@ public class TrabajadoresResourceImpl implements TrabajadoresResource {
     @Inject
     private TrabajadorResource trabajadorResource;
 
-    @Inject
-    private TrabajadorFilterProvider trabajadorFilterProvider;
-
     private AgenciaModel getAgenciaModel() {
         return agenciaProvider.findById(agencia);
     }
@@ -61,12 +58,31 @@ public class TrabajadoresResourceImpl implements TrabajadoresResource {
     }
 
     @Override
-    public Response create(TrabajadorRepresentation trabajadorRepresentation) {
-        TrabajadorModel trabajadorModel = representationToModel.createTrabajador(getAgenciaModel(),
-                trabajadorRepresentation, trabajadorProvider);
-        return Response.created(uriInfo.getAbsolutePathBuilder().path(trabajadorModel.getId()).build())
-                .header("Access-Control-Expose-Headers", "Location")
-                .entity(Jsend.getSuccessJSend(trabajadorModel.getId())).build();
+    public Response create(TrabajadorRepresentation rep) {
+        // Check duplicated tipoDocumento y numeroDocumento
+        if (trabajadorProvider.findByTipoNumeroDocumento(rep.getTipoDocumento(), rep.getNumeroDocumento()) != null) {
+            return ErrorResponse.exists("Sucursal existe con la misma denominacion");
+        }
+
+        try {
+            TrabajadorModel trabajadorModel = representationToModel.createTrabajador(getAgenciaModel(), rep,
+                    trabajadorProvider);
+            return Response.created(uriInfo.getAbsolutePathBuilder().path(trabajadorModel.getId()).build())
+                    .header("Access-Control-Expose-Headers", "Location")
+                    .entity(ModelToRepresentation.toRepresentation(trabajadorModel)).build();
+        } catch (ModelDuplicateException e) {
+            return ErrorResponse.exists("Trabajador existe con el mismo tipoDocumento y numeroDocumento");
+        }
+    }
+
+    @Override
+    public List<TrabajadorRepresentation> getAll() {
+        List<TrabajadorModel> list = trabajadorProvider.getAll(getAgenciaModel());
+        List<TrabajadorRepresentation> result = new ArrayList<>();
+        for (TrabajadorModel trabajadorModel : list) {
+            result.add(ModelToRepresentation.toRepresentation(trabajadorModel));
+        }
+        return result;
     }
 
     @Override
@@ -82,23 +98,19 @@ public class TrabajadoresResourceImpl implements TrabajadoresResource {
         searchCriteriaBean.setPaging(paging);
 
         // add ordery by
-        searchCriteriaBean.addOrder(trabajadorFilterProvider.getTipoDocumentoFilter(), true);
+        searchCriteriaBean.addOrder("tipoDocumento", true);
 
         // add filter
-        searchCriteriaBean.addFilter(trabajadorFilterProvider.getIdAgenciaFilter(),
-                getAgenciaModel().getId(), SearchCriteriaFilterOperator.eq);
         if (tipoDocumento != null) {
-            searchCriteriaBean.addFilter(trabajadorFilterProvider.getTipoDocumentoFilter(), tipoDocumento,
-                    SearchCriteriaFilterOperator.eq);
+            searchCriteriaBean.addFilter("tipoDocumento", tipoDocumento, SearchCriteriaFilterOperator.eq);
         }
         if (numeroDocumento != null) {
-            searchCriteriaBean.addFilter(trabajadorFilterProvider.getNumeroDocumentoFilter(),
-                    numeroDocumento, SearchCriteriaFilterOperator.eq);
+            searchCriteriaBean.addFilter("numeroDocumento", numeroDocumento, SearchCriteriaFilterOperator.eq);
         }
 
         // search
-        SearchResultsModel<TrabajadorModel> results = trabajadorProvider.search(searchCriteriaBean,
-                filterText);
+        SearchResultsModel<TrabajadorModel> results = trabajadorProvider.search(getAgenciaModel(),
+                searchCriteriaBean, filterText);
         SearchResultsRepresentation<TrabajadorRepresentation> rep = new SearchResultsRepresentation<>();
         List<TrabajadorRepresentation> representations = new ArrayList<>();
         for (TrabajadorModel model : results.getModels()) {

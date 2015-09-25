@@ -1,15 +1,12 @@
-package org.sistcoop.rrhh.models.exceptions;
+package org.sistcoop.rrhh.models;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class ModelDuplicateException extends ModelException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
-
+    
     private String duplicateFieldName;
 
     public ModelDuplicateException() {
@@ -35,4 +32,5 @@ public class ModelDuplicateException extends ModelException {
     public String getDuplicateFieldName() {
         return duplicateFieldName;
     }
+    
 }

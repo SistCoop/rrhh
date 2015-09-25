@@ -1,5 +1,7 @@
 package org.sistcoop.rrhh.admin.client.resource;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -29,9 +31,14 @@ public interface TrabajadoresResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public SearchResultsRepresentation<TrabajadorRepresentation> search(
+    public List<TrabajadorRepresentation> getAll();
 
-    @QueryParam("tipoDocumento") String tipoDocumento, @QueryParam("numeroDocumento") String numeroDocumento,
+    @GET
+    @Path("search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SearchResultsRepresentation<TrabajadorRepresentation> search(
+            @QueryParam("tipoDocumento") String tipoDocumento,
+            @QueryParam("numeroDocumento") String numeroDocumento,
             @QueryParam("filterText") @DefaultValue(value = "") String filterText,
             @QueryParam("page") @DefaultValue(value = "") Integer page,
             @QueryParam("pageSize") @DefaultValue(value = "20") Integer pageSize);

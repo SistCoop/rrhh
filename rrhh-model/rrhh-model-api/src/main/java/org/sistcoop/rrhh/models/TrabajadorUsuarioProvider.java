@@ -15,6 +15,8 @@ public interface TrabajadorUsuarioProvider extends Provider {
 
     TrabajadorUsuarioModel findById(String id);
 
+    TrabajadorUsuarioModel findByUsuario(String usuario);
+
     SearchResultsModel<TrabajadorUsuarioModel> search(SearchCriteriaModel criteria);
 
 }

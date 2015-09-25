@@ -19,25 +19,20 @@ public class AdminMessagesProvider implements MessagesProvider {
     private Locale locale;
     private Properties messagesBundle;
 
-    public AdminMessagesProvider() {
-        this.locale = new Locale("es");
+    public AdminMessagesProvider(Locale locale) {
+        this.locale = locale;
         this.messagesBundle = getMessagesBundle(locale);
     }
 
     @Override
     public String getMessage(String messageKey, Object... parameters) {
         String message = messagesBundle.getProperty(messageKey, messageKey);
-
         try {
             return new MessageFormat(message, locale).format(parameters);
         } catch (Exception e) {
             logger.warnf("Failed to format message due to: %s", e.getMessage());
             return message;
         }
-    }
-
-    @Override
-    public void close() {
     }
 
     private Properties getMessagesBundle(Locale locale) {
@@ -48,7 +43,7 @@ public class AdminMessagesProvider implements MessagesProvider {
         }
 
         URL url = getClass().getClassLoader().getResource(
-                "theme/base/admin/messages/messages_" + locale.toString() + ".properties");
+                "messages/messages_" + locale.toString() + ".properties");
         if (url != null) {
             try {
                 properties.load(url.openStream());

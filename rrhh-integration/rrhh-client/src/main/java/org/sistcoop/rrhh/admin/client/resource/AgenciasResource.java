@@ -1,5 +1,7 @@
 package org.sistcoop.rrhh.admin.client.resource;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -29,6 +31,11 @@ public interface AgenciasResource {
     public Response create(AgenciaRepresentation agenciaRepresentation);
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<AgenciaRepresentation> getAll();
+
+    @GET
+    @Path("search")
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsRepresentation<AgenciaRepresentation> search(
             @QueryParam("denominacion") String denominacion,

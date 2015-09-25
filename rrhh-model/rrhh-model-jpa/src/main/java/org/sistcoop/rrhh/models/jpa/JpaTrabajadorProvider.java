@@ -7,20 +7,24 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.jboss.logging.Logger;
 import org.sistcoop.rrhh.models.AgenciaModel;
+import org.sistcoop.rrhh.models.ModelDuplicateException;
+import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorProvider;
 import org.sistcoop.rrhh.models.jpa.entities.AgenciaEntity;
 import org.sistcoop.rrhh.models.jpa.entities.TrabajadorEntity;
+import org.sistcoop.rrhh.models.jpa.search.SearchCriteriaJoinModel;
+import org.sistcoop.rrhh.models.jpa.search.SearchCriteriaJoinType;
+import org.sistcoop.rrhh.models.search.SearchCriteriaFilterOperator;
 import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
 import org.sistcoop.rrhh.models.search.SearchResultsModel;
-import org.sistcoop.rrhh.models.search.filters.TrabajadorFilterProvider;
 
 @Named
 @Stateless
@@ -28,11 +32,10 @@ import org.sistcoop.rrhh.models.search.filters.TrabajadorFilterProvider;
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class JpaTrabajadorProvider extends AbstractHibernateStorage implements TrabajadorProvider {
 
+    private static final Logger logger = Logger.getLogger(JpaTrabajadorProvider.class);
+
     @PersistenceContext
     protected EntityManager em;
-
-    @Inject
-    private TrabajadorFilterProvider filterProvider;
 
     @Override
     protected EntityManager getEntityManager() {
@@ -45,8 +48,14 @@ public class JpaTrabajadorProvider extends AbstractHibernateStorage implements T
     }
 
     @Override
-    public TrabajadorModel create(AgenciaModel agenciaModel, String tipoDocumento, String numeroDocumento) {
-        AgenciaEntity agenciaEntity = em.find(AgenciaEntity.class, agenciaModel.getId());
+    public TrabajadorModel create(AgenciaModel agencia, String tipoDocumento, String numeroDocumento) {
+        if (findByTipoNumeroDocumento(tipoDocumento, numeroDocumento) != null) {
+            throw new ModelDuplicateException(
+                    "TrabajadorEntity tipoDocumento y numeroDocumento debe ser unico, se encontro otra entidad con tipoDocumento="
+                            + tipoDocumento + " y numeroDocumento=" + numeroDocumento);
+        }
+
+        AgenciaEntity agenciaEntity = em.find(AgenciaEntity.class, agencia.getId());
 
         TrabajadorEntity trabajadorEntity = new TrabajadorEntity();
         trabajadorEntity.setAgencia(agenciaEntity);
@@ -59,8 +68,12 @@ public class JpaTrabajadorProvider extends AbstractHibernateStorage implements T
 
     @Override
     public boolean remove(TrabajadorModel TrabajadorModel) {
-        TrabajadorEntity TrabajadorEntity = em.find(TrabajadorEntity.class, TrabajadorModel.getId());
-        em.remove(TrabajadorEntity);
+        TrabajadorEntity trabajadorEntity = em.find(TrabajadorEntity.class, TrabajadorModel.getId());
+        if (trabajadorEntity != null) {
+            logger.info("TrabajadorEntity tiene TrabajadorUsuarioEntity asociados, TrabajadorEntity.remove() eliminara todas las entidades asociadas");
+        }
+
+        em.remove(trabajadorEntity);
         return true;
     }
 
@@ -71,26 +84,38 @@ public class JpaTrabajadorProvider extends AbstractHibernateStorage implements T
     }
 
     @Override
-    public SearchResultsModel<TrabajadorModel> search() {
-        TypedQuery<TrabajadorEntity> query = em.createNamedQuery("TrabajadorEntity.findAll",
-                TrabajadorEntity.class);
-
-        List<TrabajadorEntity> entities = query.getResultList();
-        List<TrabajadorModel> models = new ArrayList<TrabajadorModel>();
-        for (TrabajadorEntity bovedaEntity : entities) {
-            models.add(new TrabajadorAdapter(em, bovedaEntity));
+    public TrabajadorModel findByTipoNumeroDocumento(String tipoDocumento, String numeroDocumento) {
+        TypedQuery<TrabajadorEntity> query = em.createNamedQuery(
+                "TrabajadorEntity.findByTipoNumeroDocumento", TrabajadorEntity.class);
+        query.setParameter("tipoDocumento", tipoDocumento);
+        query.setParameter("numeroDocumento", numeroDocumento);
+        List<TrabajadorEntity> results = query.getResultList();
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() > 1) {
+            throw new IllegalStateException("Mas de un TrabajadorEntity con tipoDocumento=" + tipoDocumento
+                    + " y numeroDocumento=" + numeroDocumento + ", results=" + results);
+        } else {
+            return new TrabajadorAdapter(em, results.get(0));
         }
+    }
 
-        SearchResultsModel<TrabajadorModel> result = new SearchResultsModel<>();
-        result.setModels(models);
-        result.setTotalSize(models.size());
+    @Override
+    public List<TrabajadorModel> getAll(AgenciaModel agencia) {
+        TypedQuery<TrabajadorEntity> query = em.createNamedQuery("TrabajadorEntity.findByIdAgencia",
+                TrabajadorEntity.class);
+        query.setParameter("idAgencia", agencia.getId());
+        List<TrabajadorEntity> entities = query.getResultList();
+        List<TrabajadorModel> result = new ArrayList<TrabajadorModel>();
+        for (TrabajadorEntity bovedaEntity : entities) {
+            result.add(new TrabajadorAdapter(em, bovedaEntity));
+        }
         return result;
     }
 
     @Override
     public SearchResultsModel<TrabajadorModel> search(SearchCriteriaModel criteria) {
         SearchResultsModel<TrabajadorEntity> entityResult = find(criteria, TrabajadorEntity.class);
-
         SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
         List<TrabajadorModel> list = new ArrayList<>();
         for (TrabajadorEntity entity : entityResult.getModels()) {
@@ -104,8 +129,83 @@ public class JpaTrabajadorProvider extends AbstractHibernateStorage implements T
     @Override
     public SearchResultsModel<TrabajadorModel> search(SearchCriteriaModel criteria, String filterText) {
         SearchResultsModel<TrabajadorEntity> entityResult = findFullText(criteria, TrabajadorEntity.class,
-                filterText, filterProvider.getNumeroDocumentoFilter());
+                filterText, "numeroDocumento");
+        SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
+        List<TrabajadorModel> list = new ArrayList<>();
+        for (TrabajadorEntity entity : entityResult.getModels()) {
+            list.add(new TrabajadorAdapter(em, entity));
+        }
+        modelResult.setTotalSize(entityResult.getTotalSize());
+        modelResult.setModels(list);
+        return modelResult;
+    }
 
+    @Override
+    public SearchResultsModel<TrabajadorModel> search(SucursalModel sucursal, SearchCriteriaModel criteria) {
+        SearchCriteriaJoinModel criteriaJoin = new SearchCriteriaJoinModel("trabajador");
+        criteriaJoin.addJoin("trabajador.agencia", "agencia", SearchCriteriaJoinType.INNER_JOIN);
+        criteriaJoin.addJoin("agencia.sucursal", "sucursal", SearchCriteriaJoinType.INNER_JOIN);
+        criteriaJoin.addCondition("sucursal.id", sucursal.getId(), SearchCriteriaFilterOperator.eq);
+
+        SearchResultsModel<TrabajadorEntity> entityResult = find(criteriaJoin, criteria,
+                TrabajadorEntity.class);
+        SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
+        List<TrabajadorModel> list = new ArrayList<>();
+        for (TrabajadorEntity entity : entityResult.getModels()) {
+            list.add(new TrabajadorAdapter(em, entity));
+        }
+        modelResult.setTotalSize(entityResult.getTotalSize());
+        modelResult.setModels(list);
+        return modelResult;
+    }
+
+    @Override
+    public SearchResultsModel<TrabajadorModel> search(SucursalModel sucursal, SearchCriteriaModel criteria,
+            String filterText) {
+        SearchCriteriaJoinModel criteriaJoin = new SearchCriteriaJoinModel("trabajador");
+        criteriaJoin.addJoin("trabajador.agencia", "agencia", SearchCriteriaJoinType.INNER_JOIN);
+        criteriaJoin.addJoin("agencia.sucursal", "sucursal", SearchCriteriaJoinType.INNER_JOIN);
+        criteriaJoin.addCondition("sucursal.id", sucursal.getId(), SearchCriteriaFilterOperator.eq);
+
+        SearchResultsModel<TrabajadorEntity> entityResult = findFullText(criteriaJoin, criteria,
+                TrabajadorEntity.class, filterText, "numeroDocumento");
+        SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
+        List<TrabajadorModel> list = new ArrayList<>();
+        for (TrabajadorEntity entity : entityResult.getModels()) {
+            list.add(new TrabajadorAdapter(em, entity));
+        }
+        modelResult.setTotalSize(entityResult.getTotalSize());
+        modelResult.setModels(list);
+        return modelResult;
+    }
+
+    @Override
+    public SearchResultsModel<TrabajadorModel> search(AgenciaModel agencia, SearchCriteriaModel criteria) {
+        SearchCriteriaJoinModel criteriaJoin = new SearchCriteriaJoinModel("trabajador");
+        criteriaJoin.addJoin("trabajador.agencia", "agencia", SearchCriteriaJoinType.INNER_JOIN);
+        criteriaJoin.addCondition("agencia.id", agencia.getId(), SearchCriteriaFilterOperator.eq);
+
+        SearchResultsModel<TrabajadorEntity> entityResult = find(criteriaJoin, criteria,
+                TrabajadorEntity.class);
+        SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
+        List<TrabajadorModel> list = new ArrayList<>();
+        for (TrabajadorEntity entity : entityResult.getModels()) {
+            list.add(new TrabajadorAdapter(em, entity));
+        }
+        modelResult.setTotalSize(entityResult.getTotalSize());
+        modelResult.setModels(list);
+        return modelResult;
+    }
+
+    @Override
+    public SearchResultsModel<TrabajadorModel> search(AgenciaModel agencia, SearchCriteriaModel criteria,
+            String filterText) {
+        SearchCriteriaJoinModel criteriaJoin = new SearchCriteriaJoinModel("trabajador");
+        criteriaJoin.addJoin("trabajador.agencia", "agencia", SearchCriteriaJoinType.INNER_JOIN);
+        criteriaJoin.addCondition("agencia.id", agencia.getId(), SearchCriteriaFilterOperator.eq);
+
+        SearchResultsModel<TrabajadorEntity> entityResult = findFullText(criteriaJoin, criteria,
+                TrabajadorEntity.class, filterText, "numeroDocumento");
         SearchResultsModel<TrabajadorModel> modelResult = new SearchResultsModel<>();
         List<TrabajadorModel> list = new ArrayList<>();
         for (TrabajadorEntity entity : entityResult.getModels()) {

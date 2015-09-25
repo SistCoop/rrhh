@@ -3,6 +3,7 @@ package org.sistcoop.rrhh.models.jpa.entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,10 +19,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "TRABAJADOR")
+@NamedQueries(value = {
+        @NamedQuery(name = "TrabajadorEntity.findAll", query = "SELECT t FROM TrabajadorEntity t"),
+        @NamedQuery(name = "TrabajadorEntity.findByTipoNumeroDocumento", query = "SELECT t FROM TrabajadorEntity t WHERE t.tipoDocumento = :tipoDocumento AND t.numeroDocumento = :numeroDocumento"),
+        @NamedQuery(name = "TrabajadorEntity.findByIdAgencia", query = "SELECT t FROM TrabajadorEntity t INNER JOIN t.agencia a WHERE a.id = :idAgencia"),
+        @NamedQuery(name = "TrabajadorEntity.findByIdTrabajadorUsuario", query = "SELECT t FROM TrabajadorEntity t INNER JOIN t.trabajadorUsuario tu WHERE tu.id = :idTrabajadorUsuario") })
 public class TrabajadorEntity implements Serializable {
 
     /**
@@ -29,21 +37,44 @@ public class TrabajadorEntity implements Serializable {
 	 */
     private static final long serialVersionUID = 1L;
 
-    private String id;
-    private String tipoDocumento;
-    private String numeroDocumento;
-    private AgenciaEntity agencia;
-    private AreaEntity area;
-    private CargoEntity cargo;
-
-    private TrabajadorUsuarioEntity trabajadorUsuario;
-
-    private Timestamp optlk;
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "ID")
+    private String id;
+
+    @NotNull
+    @Size(min = 1, max = 20)
+    @NotBlank
+    @Column(name = "TIPO_DOCUMENTO")
+    private String tipoDocumento;
+
+    @NotNull
+    @Size(min = 1, max = 20)
+    @NotBlank
+    @Column(name = "NUMERO_DOCUMENTO")
+    private String numeroDocumento;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey, name = "AGENCIA_ID")
+    private AgenciaEntity agencia;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey)
+    private AreaEntity area;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = @ForeignKey)
+    private CargoEntity cargo;
+
+    @OneToOne(orphanRemoval = true, cascade = { CascadeType.REMOVE })
+    @JoinColumn(name = "TRABAJADOR_USUARIO_ID", foreignKey = @ForeignKey)
+    private TrabajadorUsuarioEntity trabajadorUsuario;
+
+    @Version
+    private Timestamp optlk;
+
     public String getId() {
         return id;
     }
@@ -52,10 +83,6 @@ public class TrabajadorEntity implements Serializable {
         this.id = id;
     }
 
-    @NotNull
-    @Size(min = 1, max = 20)
-    @NotBlank
-    @Column(name = "TIPO_DOCUMENTO")
     public String getTipoDocumento() {
         return tipoDocumento;
     }
@@ -64,10 +91,6 @@ public class TrabajadorEntity implements Serializable {
         this.tipoDocumento = tipoDocumento;
     }
 
-    @NotNull
-    @Size(min = 1, max = 20)
-    @NotBlank
-    @Column(name = "NUMERO_DOCUMENTO")
     public String getNumeroDocumento() {
         return numeroDocumento;
     }
@@ -76,9 +99,6 @@ public class TrabajadorEntity implements Serializable {
         this.numeroDocumento = numeroDocumento;
     }
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey, name = "AGENCIA_ID")
     public AgenciaEntity getAgencia() {
         return agencia;
     }
@@ -87,8 +107,6 @@ public class TrabajadorEntity implements Serializable {
         this.agencia = agencia;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey)
     public AreaEntity getArea() {
         return area;
     }
@@ -97,8 +115,6 @@ public class TrabajadorEntity implements Serializable {
         this.area = area;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey)
     public CargoEntity getCargo() {
         return cargo;
     }
@@ -107,8 +123,6 @@ public class TrabajadorEntity implements Serializable {
         this.cargo = cargo;
     }
 
-    @OneToOne
-    @JoinColumn(name = "TRABAJADOR_USUARIO_ID", foreignKey = @ForeignKey)
     public TrabajadorUsuarioEntity getTrabajadorUsuario() {
         return trabajadorUsuario;
     }
@@ -117,7 +131,6 @@ public class TrabajadorEntity implements Serializable {
         this.trabajadorUsuario = trabajadorUsuario;
     }
 
-    @Version
     public Timestamp getOptlk() {
         return optlk;
     }

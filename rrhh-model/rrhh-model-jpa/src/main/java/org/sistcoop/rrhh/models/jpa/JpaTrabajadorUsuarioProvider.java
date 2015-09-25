@@ -10,7 +10,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
+import org.sistcoop.rrhh.models.ModelDuplicateException;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
 import org.sistcoop.rrhh.models.TrabajadorUsuarioProvider;
@@ -41,12 +43,25 @@ public class JpaTrabajadorUsuarioProvider extends AbstractHibernateStorage imple
 
     @Override
     public TrabajadorUsuarioModel create(TrabajadorModel trabajadorModel, String usuario) {
+        if (findByUsuario(usuario) != null) {
+            throw new ModelDuplicateException(
+                    "TrabajadorUsuarioEntity usuario debe ser unico, se encontro otra entidad con usuario="
+                            + usuario);
+        }
+
         TrabajadorEntity trabajadorEntity = em.find(TrabajadorEntity.class, trabajadorModel.getId());
+        if (trabajadorEntity.getTrabajadorUsuario() != null) {
+            throw new ModelDuplicateException(
+                    "TrabajadorEntity solo puede tener un usuario, el trabajador ya tiene un usuario asignado");
+        }
 
         TrabajadorUsuarioEntity trabajadorUsuarioEntity = new TrabajadorUsuarioEntity();
-        trabajadorUsuarioEntity.setTrabajador(trabajadorEntity);
         trabajadorUsuarioEntity.setUsuario(usuario);
         em.persist(trabajadorUsuarioEntity);
+
+        trabajadorEntity.setTrabajadorUsuario(trabajadorUsuarioEntity);
+        em.merge(trabajadorEntity);
+
         return new TrabajadorUsuarioAdapter(em, trabajadorUsuarioEntity);
 
     }
@@ -62,6 +77,22 @@ public class JpaTrabajadorUsuarioProvider extends AbstractHibernateStorage imple
     public TrabajadorUsuarioModel findById(String id) {
         TrabajadorUsuarioEntity entity = this.em.find(TrabajadorUsuarioEntity.class, id);
         return entity != null ? new TrabajadorUsuarioAdapter(em, entity) : null;
+    }
+
+    @Override
+    public TrabajadorUsuarioModel findByUsuario(String usuario) {
+        TypedQuery<TrabajadorUsuarioEntity> query = em.createNamedQuery(
+                "TrabajadorUsuarioEntity.findByUsuario", TrabajadorUsuarioEntity.class);
+        query.setParameter("usuario", usuario);
+        List<TrabajadorUsuarioEntity> results = query.getResultList();
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() > 1) {
+            throw new IllegalStateException("Mas de un TrabajadorUsuarioEntity con usuario=" + usuario
+                    + ", results=" + results);
+        } else {
+            return new TrabajadorUsuarioAdapter(em, results.get(0));
+        }
     }
 
     @Override

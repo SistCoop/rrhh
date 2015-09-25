@@ -38,18 +38,18 @@ public class TrabajadorManager {
             trabajadorUsuarioModel.commit();
         } else {
             trabajadorUsuarioModel = trabajadorUsuarioProvider.create(trabajadorModel, usuario);
-            trabajadorModel.setTrabajadorUsuarioModel(trabajadorUsuarioModel);
-            trabajadorModel.commit();
+            trabajadorModel.setTrabajadorUsuarioModel(trabajadorUsuarioModel);            
         }
     }
 
-    public void removeUsuario(TrabajadorModel trabajadorModel) {
+    public boolean removeUsuario(TrabajadorModel trabajadorModel) {
         TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorModel.getTrabajadorUsuarioModel();
         if (trabajadorUsuarioModel != null) {
             trabajadorModel.setTrabajadorUsuarioModel(null);
             trabajadorModel.commit();
             trabajadorUsuarioProvider.remove(trabajadorUsuarioModel);
         }
+        return true;
     }
 
 }

@@ -5,22 +5,23 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "TRABAJADOR_USUARIO")
+@NamedQueries(value = {
+        @NamedQuery(name = "TrabajadorUsuarioEntity.findAll", query = "SELECT t FROM TrabajadorUsuarioEntity t"),
+        @NamedQuery(name = "TrabajadorUsuarioEntity.findByUsuario", query = "SELECT t FROM TrabajadorUsuarioEntity t WHERE t.usuario = :usuario") })
 public class TrabajadorUsuarioEntity implements Serializable {
 
     /**
@@ -28,16 +29,21 @@ public class TrabajadorUsuarioEntity implements Serializable {
 	 */
     private static final long serialVersionUID = 1L;
 
-    private String id;
-    private String usuario;
-    private TrabajadorEntity trabajador;
-
-    private Timestamp optlk;
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "ID")
+    private String id;
+
+    @NotNull
+    @Size(min = 1, max = 60)
+    @NotBlank
+    @Column(name = "USUARIO")
+    private String usuario;
+
+    @Version
+    private Timestamp optlk;
+
     public String getId() {
         return id;
     }
@@ -46,10 +52,6 @@ public class TrabajadorUsuarioEntity implements Serializable {
         this.id = id;
     }
 
-    @NotNull
-    @Size(min = 1, max = 60)
-    @NotBlank
-    @Column(name = "USUARIO")
     public String getUsuario() {
         return usuario;
     }
@@ -58,18 +60,6 @@ public class TrabajadorUsuarioEntity implements Serializable {
         this.usuario = usuario;
     }
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(foreignKey = @ForeignKey, name = "TRABAJADOR_ID")
-    public TrabajadorEntity getTrabajador() {
-        return trabajador;
-    }
-
-    public void setTrabajador(TrabajadorEntity trabajador) {
-        this.trabajador = trabajador;
-    }
-
-    @Version
     public Timestamp getOptlk() {
         return optlk;
     }

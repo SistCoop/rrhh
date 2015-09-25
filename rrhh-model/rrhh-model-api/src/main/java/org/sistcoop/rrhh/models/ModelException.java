@@ -1,13 +1,10 @@
-package org.sistcoop.rrhh.models.exceptions;
+package org.sistcoop.rrhh.models;
 
 /**
  * @author <a href="mailto:sthorger@redhat.com">Stian Thorgersen</a>
  */
 public class ModelException extends RuntimeException {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
     private Object[] parameters;

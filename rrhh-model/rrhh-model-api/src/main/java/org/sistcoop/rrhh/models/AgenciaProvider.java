@@ -1,5 +1,7 @@
 package org.sistcoop.rrhh.models;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
@@ -11,12 +13,17 @@ public interface AgenciaProvider extends Provider {
 
     AgenciaModel create(SucursalModel sucursal, String denominacion);
 
-    boolean remove(AgenciaModel agenciaModel);
+    boolean remove(AgenciaModel agencia);
 
     AgenciaModel findById(String id);
 
-    SearchResultsModel<AgenciaModel> search(SearchCriteriaModel criteria);
+    AgenciaModel findByDenominacion(SucursalModel sucursal, String denominacion);
 
-    SearchResultsModel<AgenciaModel> search(SearchCriteriaModel criteria, String filterText);
+    List<AgenciaModel> getAll(SucursalModel sucursal);
+
+    SearchResultsModel<AgenciaModel> search(SucursalModel sucursal, SearchCriteriaModel criteria);
+
+    SearchResultsModel<AgenciaModel> search(SucursalModel sucursal, SearchCriteriaModel criteria,
+            String filterText);
 
 }

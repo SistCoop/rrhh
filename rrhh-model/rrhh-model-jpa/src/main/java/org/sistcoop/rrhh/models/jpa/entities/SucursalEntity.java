@@ -27,7 +27,7 @@ import org.hibernate.validator.constraints.NotBlank;
 @Table(name = "SUCURSAL")
 @NamedQueries(value = {
         @NamedQuery(name = "SucursalEntity.findAll", query = "SELECT s FROM SucursalEntity s"),
-        @NamedQuery(name = "BovedaEntity.findByDenominacion", query = "SELECT s FROM SucursalEntity s WHERE s.denominacion = :denominacion") })
+        @NamedQuery(name = "SucursalEntity.findByDenominacion", query = "SELECT s FROM SucursalEntity s WHERE s.denominacion = :denominacion") })
 public class SucursalEntity implements Serializable {
 
     /**
@@ -35,17 +35,25 @@ public class SucursalEntity implements Serializable {
 	 */
     private static final long serialVersionUID = 1L;
 
-    private String id;
-    private String denominacion;
-
-    private Set<AgenciaEntity> agencias = new HashSet<AgenciaEntity>();
-
-    private Timestamp optlk;
-
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "ID")
+    private String id;
+
+    @NotNull
+    @Size(min = 1, max = 60)
+    @NotBlank
+    @NaturalId(mutable = true)
+    @Column(name = "DENOMINACION")
+    private String denominacion;
+
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE, mappedBy = "sucursal")
+    private Set<AgenciaEntity> agencias = new HashSet<AgenciaEntity>();
+
+    @Version
+    private Timestamp optlk;
+
     public String getId() {
         return id;
     }
@@ -54,11 +62,6 @@ public class SucursalEntity implements Serializable {
         this.id = id;
     }
 
-    @NotNull
-    @Size(min = 1, max = 60)
-    @NotBlank
-    @NaturalId(mutable = true)
-    @Column(name = "DENOMINACION")
     public String getDenominacion() {
         return denominacion;
     }
@@ -67,7 +70,6 @@ public class SucursalEntity implements Serializable {
         this.denominacion = denominacion;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "sucursal")
     public Set<AgenciaEntity> getAgencias() {
         return agencias;
     }
@@ -76,7 +78,6 @@ public class SucursalEntity implements Serializable {
         this.agencias = agencias;
     }
 
-    @Version
     public Timestamp getOptlk() {
         return optlk;
     }

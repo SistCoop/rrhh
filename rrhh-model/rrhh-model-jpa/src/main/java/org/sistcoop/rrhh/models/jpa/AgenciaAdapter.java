@@ -16,8 +16,8 @@ public class AgenciaAdapter implements AgenciaModel {
 
 	private static final long serialVersionUID = 1L;
 
-	protected AgenciaEntity agenciaEntity;
-	protected EntityManager em;
+	private AgenciaEntity agenciaEntity;
+	private EntityManager em;
 
 	public AgenciaAdapter(EntityManager em, AgenciaEntity agenciaEntity) {
 		this.em = em;

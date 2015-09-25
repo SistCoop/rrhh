@@ -29,11 +29,12 @@ public interface TrabajadoresRootResource {
     public Response create(TrabajadorRepresentation trabajadorRepresentation);
 
     @GET
+    @Path("search")
     @Produces(MediaType.APPLICATION_JSON)
     public SearchResultsRepresentation<TrabajadorRepresentation> search(
-            @QueryParam("usuario") String usuario, 
-            @QueryParam("documento") String documento, @QueryParam("numero") String numero,
-            @QueryParam("sucursal") String sucursal, @QueryParam("agencia") String agencia,
+            @QueryParam("usuario") String usuario, @QueryParam("tipoDocumento") String tipoDocumento,
+            @QueryParam("numeroDocumento") String numeroDocumento,
+            @QueryParam("idSucursal") String idSucursal, @QueryParam("idAgencia") String idAgencia,
             @QueryParam("filterText") String filterText,
             @QueryParam("page") @DefaultValue(value = "1") int page,
             @QueryParam("pageSize") @DefaultValue(value = "20") int pageSize);

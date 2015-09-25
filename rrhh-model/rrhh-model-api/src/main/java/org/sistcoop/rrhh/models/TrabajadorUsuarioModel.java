@@ -2,12 +2,12 @@ package org.sistcoop.rrhh.models;
 
 public interface TrabajadorUsuarioModel extends Model {
 
-	String getId();
+    String getId();
 
-	String getUsuario();
+    String getUsuario();
 
-	void setUsuario(String usuario);
+    void setUsuario(String usuario);
 
-	TrabajadorModel getTrabajador();
+    TrabajadorModel getTrabajador();
 
 }

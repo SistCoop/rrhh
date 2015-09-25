@@ -1,5 +1,7 @@
 package org.sistcoop.rrhh.models;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
@@ -15,7 +17,9 @@ public interface SucursalProvider extends Provider {
 
     SucursalModel findById(String id);
 
-    SearchResultsModel<SucursalModel> search();
+    SucursalModel findByDenominacion(String denominacion);
+
+    List<SucursalModel> getAll();
 
     SearchResultsModel<SucursalModel> search(SearchCriteriaModel criteria);
 

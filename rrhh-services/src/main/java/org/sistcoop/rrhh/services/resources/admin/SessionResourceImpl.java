@@ -17,10 +17,6 @@ import org.sistcoop.rrhh.models.SucursalModel;
 import org.sistcoop.rrhh.models.TrabajadorModel;
 import org.sistcoop.rrhh.models.TrabajadorUsuarioModel;
 import org.sistcoop.rrhh.models.TrabajadorUsuarioProvider;
-import org.sistcoop.rrhh.models.search.SearchCriteriaFilterOperator;
-import org.sistcoop.rrhh.models.search.SearchCriteriaModel;
-import org.sistcoop.rrhh.models.search.SearchResultsModel;
-import org.sistcoop.rrhh.models.search.filters.TrabajadorUsuarioFilterProvider;
 import org.sistcoop.rrhh.models.utils.ModelToRepresentation;
 import org.sistcoop.rrhh.representations.idm.AgenciaRepresentation;
 import org.sistcoop.rrhh.representations.idm.SucursalRepresentation;
@@ -35,9 +31,6 @@ public class SessionResourceImpl implements SessionResource {
     @Inject
     private TrabajadorUsuarioProvider trabajadorUsuarioProvider;
 
-    @Inject
-    private TrabajadorUsuarioFilterProvider trabajadorUsuarioFilterProvider;
-
     @Override
     public SucursalRepresentation getSucursal() {
         // Just to show how to user info from access token in REST endpoint
@@ -49,26 +42,18 @@ public class SessionResourceImpl implements SessionResource {
         Set<String> roles = accessToken.getRealmAccess().getRoles();
         String usuario = accessToken.getPreferredUsername();
 
-        SearchCriteriaModel searchCriteriaBean = new SearchCriteriaModel();
-        // add filter
-        searchCriteriaBean.addFilter(trabajadorUsuarioFilterProvider.getUsuarioFilter(), usuario,
-                SearchCriteriaFilterOperator.eq);
-
-        // search
-        SearchResultsModel<TrabajadorUsuarioModel> results = trabajadorUsuarioProvider
-                .search(searchCriteriaBean);
+        TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorUsuarioProvider.findByUsuario(usuario);
         if (roles.contains("ADMIN")) {
-            if (results.getModels().isEmpty()) {
+            if (trabajadorUsuarioModel == null) {
                 return null;
             }
         } else {
-            if (results.getModels().isEmpty()) {
+            if (trabajadorUsuarioModel == null) {
                 throw new BadRequestException("Usuario no encontrado en RRHH");
             }
         }
 
         // Verificar
-        TrabajadorUsuarioModel trabajadorUsuarioModel = results.getModels().get(0);
         TrabajadorModel trabajadorModel = trabajadorUsuarioModel.getTrabajador();
         AgenciaModel agenciaModel = trabajadorModel.getAgencia();
         SucursalModel sucursalModel = agenciaModel.getSucursal();
@@ -92,26 +77,18 @@ public class SessionResourceImpl implements SessionResource {
         Set<String> roles = accessToken.getRealmAccess().getRoles();
         String usuario = accessToken.getPreferredUsername();
 
-        SearchCriteriaModel searchCriteriaBean = new SearchCriteriaModel();
-        // add filter
-        searchCriteriaBean.addFilter(trabajadorUsuarioFilterProvider.getUsuarioFilter(), usuario,
-                SearchCriteriaFilterOperator.eq);
-
-        // search
-        SearchResultsModel<TrabajadorUsuarioModel> results = trabajadorUsuarioProvider
-                .search(searchCriteriaBean);
+        TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorUsuarioProvider.findByUsuario(usuario);
         if (roles.contains("ADMIN")) {
-            if (results.getModels().isEmpty()) {
+            if (trabajadorUsuarioModel == null) {
                 return null;
             }
         } else {
-            if (results.getModels().isEmpty()) {
+            if (trabajadorUsuarioModel == null) {
                 throw new BadRequestException("Usuario no encontrado en RRHH");
             }
         }
 
         // Verificar
-        TrabajadorUsuarioModel trabajadorUsuarioModel = results.getModels().get(0);
         TrabajadorModel trabajadorModel = trabajadorUsuarioModel.getTrabajador();
         AgenciaModel agenciaModel = trabajadorModel.getAgencia();
 
@@ -134,26 +111,18 @@ public class SessionResourceImpl implements SessionResource {
         Set<String> roles = accessToken.getRealmAccess().getRoles();
         String usuario = accessToken.getPreferredUsername();
 
-        SearchCriteriaModel searchCriteriaBean = new SearchCriteriaModel();
-        // add filter
-        searchCriteriaBean.addFilter(trabajadorUsuarioFilterProvider.getUsuarioFilter(), usuario,
-                SearchCriteriaFilterOperator.eq);
-
-        // search
-        SearchResultsModel<TrabajadorUsuarioModel> results = trabajadorUsuarioProvider
-                .search(searchCriteriaBean);
+        TrabajadorUsuarioModel trabajadorUsuarioModel = trabajadorUsuarioProvider.findByUsuario(usuario);
         if (roles.contains("ADMIN")) {
-            if (results.getModels().isEmpty()) {
+            if (trabajadorUsuarioModel == null) {
                 return null;
             }
         } else {
-            if (results.getModels().isEmpty()) {
+            if (trabajadorUsuarioModel == null) {
                 throw new BadRequestException("Usuario no encontrado en RRHH");
             }
         }
 
         // Verificar
-        TrabajadorUsuarioModel trabajadorUsuarioModel = results.getModels().get(0);
         TrabajadorModel trabajadorModel = trabajadorUsuarioModel.getTrabajador();
 
         TrabajadorRepresentation rep = ModelToRepresentation.toRepresentation(trabajadorModel);
